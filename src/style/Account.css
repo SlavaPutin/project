@@ -1,0 +1,29 @@
+.acc-wrap-content {
+    margin-top: 50px;
+    min-width: 400px;
+    min-height: 400px;
+    border-radius: 15px;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.acc-info{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: space-between;
+}
+
+.wrap-leave{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+    bottom: 10px;
+}
+

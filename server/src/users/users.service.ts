@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/UserCreate.dto';
 import { RoleService } from 'src/role/role.service';
 import * as bcrypt from 'bcryptjs'
 import { addRoleDto } from './dto/addRole.dto';
+import { banDto } from './dto/ban.dto';
 
 @Injectable()
 export class UsersService {
@@ -44,14 +45,7 @@ export class UsersService {
         return user
     }
 
-    async updateRefreshToken(userId: number, refreshToken: string | null) {
-        const hashedToken = refreshToken ? await bcrypt.hash(refreshToken, 5) : null;
-        
-        await this.UserModel.update(
-            { refreshToken: hashedToken }, 
-            { where: { id: userId } }
-        );
-    }
+    
 
     async getProfile(name: string){
         const user = await this.UserModel.findOne({where: {name}, attributes: { exclude: ['password', 'refreshToken', 'createdAt', 'updatedAt'] }})
@@ -59,17 +53,51 @@ export class UsersService {
     }
 
     async addRole(dto: addRoleDto){
-        try{
-            const user = await this.UserModel.findOne({where: {name: dto.name}})
-            const role = await this.roleService.getRoleByvalue(dto.role)
-            if (!user || !role){
-                throw new HttpException("Пользователь или роль не найдены", HttpStatus.NOT_FOUND)
-            }
-            await user.$add('role', role)
-            return await user.reload({ include: { all: true } });
-        } catch(e){
-            throw new HttpException("Не удалось добавить роль", HttpStatus.BAD_REQUEST)
+        const user = await this.UserModel.findOne({where: {name: dto.name}})
+        const role = await this.roleService.getRoleByvalue(dto.role)
+        if (!user || !role){
+            throw new HttpException("Пользователь или роль не найдены", HttpStatus.NOT_FOUND)
         }
+        await user.$add('role', role)
+        return await user.reload({ include: { all: true } });
+    }
+
+    async removeRole(dto: addRoleDto){
+        const user = await this.UserModel.findOne({where: {name: dto.name}})
+        const role = await this.roleService.getRoleByvalue(dto.role)
+        if (!user || !role){
+            throw new HttpException("Пользователь или роль не найдены", HttpStatus.NOT_FOUND)
+        }
+        await user.$remove('role', role)
+        return await user.reload({ include: { all: true } }); 
+    }
+
+    async ban(dto: banDto){
+        const user = await this.UserModel.findOne({where: {name: dto.name}})
+        if(!user){
+            throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND)
+        }
+        if(user.banned){
+            throw new HttpException("Пользователь уже забанен", HttpStatus.BAD_REQUEST)
+        }
+        user.banned = true
+        user.banReason = dto.banReason
+        await user.save()
+        return user; 
+    }
+    
+    async unban(dto: banDto){
+        const user = await this.UserModel.findOne({where: {name: dto.name}})
+        if(!user){
+            throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND)
+        }
+        if(!user.banned){
+            throw new HttpException("Пользователь не был забаненым", HttpStatus.BAD_REQUEST)
+        } 
+        user.banned = false
+        user.banReason = null
+        await user.save()
+        return user; 
     }
 
     async removeToken(name: string) {
@@ -79,5 +107,14 @@ export class UsersService {
     );
     const user = await this.getUserByName(name)
     return user
-}
+    }
+
+    async updateRefreshToken(userId: number, refreshToken: string | null) {
+            const hashedToken = refreshToken ? await bcrypt.hash(refreshToken, 5) : null;
+            
+            await this.UserModel.update(
+                { refreshToken: hashedToken }, 
+                { where: { id: userId } }
+            );
+        }
 }

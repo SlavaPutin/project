@@ -24,11 +24,11 @@ export class User extends Model<User, CreateUserAttr>{
 
     @Column({type: DataType.BOOLEAN, defaultValue: false})
     @ApiProperty({example: 'true', description: "Забанен ли"})
-    banned: boolean;
+    banned!: boolean;
 
     @Column({type: DataType.STRING, allowNull: true})
     @ApiProperty({example: 'Просто так', description: "Причина бана"})
-    banReason: string;
+    banReason: string | null;
     
     @Column({ type: DataType.STRING, allowNull: true })
     @ApiProperty({example: 'Данные токена', description: "Токен с помощью которого обновляется access токен"})

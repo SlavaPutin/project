@@ -6,6 +6,7 @@ import * as express from 'express'
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthResponseDto } from './dto/authResponse.dto';
 import { User } from 'src/users/user.model';
+import { BanGuard } from './Guards/ban.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -57,7 +58,7 @@ export class AuthController {
     @Post('/refresh')
     @ApiOperation({summary: 'Обновление Access токена'})
     @ApiResponse({status: 200, type: AuthResponseDto})
-    @UseGuards(AuthGuard('jwt-refresh'))
+    @UseGuards(AuthGuard('jwt-refresh'), BanGuard)
     async refresh(@Body('refreshToken') refreshToken: string) {
         return this.authService.refresh(refreshToken);
     }
@@ -65,7 +66,7 @@ export class AuthController {
     @Get('/profile')
     @ApiOperation({summary: 'Профиль'})
     @ApiResponse({status: 200, type: User})
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), BanGuard)
     profile(@Body('name') name: string){
         return this.authService.profile(name)
     }
@@ -73,7 +74,7 @@ export class AuthController {
     @Post('/logout')
     @ApiOperation({summary: 'Выход'})
     @ApiResponse({status: 200, type: User})
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(AuthGuard('jwt'), BanGuard)
     logout(@Body('name') name: string,
         @Res({ passthrough: true }) response: express.Response
 ){

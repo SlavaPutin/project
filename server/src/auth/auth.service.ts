@@ -49,15 +49,17 @@ export class AuthService {
     private async generateToken(user: User){
         try{
             const payload = {
-                id: user.dataValues.id,
-                name: user.dataValues.name,
-                roles: user.dataValues.role
+                id: user.id,
+                name: user.name,
+                roles: user.role,
+                ban: user.banned,
+                banReason: user.banReason
             };
             const [accessToken, refreshToken] = await Promise.all([
                 this.jwtService.signAsync(payload, { expiresIn: '15m', secret: process.env.SECRET_KEY_ACCESS }),
                 this.jwtService.signAsync(payload, { expiresIn: '7d', secret: process.env.SECRET_KEY_REFRESH }),
             ]);
-            await this.userService.updateRefreshToken(user.dataValues.id, refreshToken);
+            await this.userService.updateRefreshToken(user.id, refreshToken);
             return { accessToken, refreshToken };
         } catch(e){
             throw new UnauthorizedException

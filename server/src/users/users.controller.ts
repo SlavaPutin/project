@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/UserCreate.dto';
 import { addRoleDto } from './dto/addRole.dto';
@@ -7,6 +7,8 @@ import { Roles } from 'src/auth/roles-auth.decorator';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { User } from './user.model';
 import { UserRole } from 'src/role/user-role.model';
+import { banDto } from './dto/ban.dto';
+import { BanGuard } from 'src/auth/Guards/ban.guard';
 
 @Controller('users')
 export class UsersController {
@@ -27,16 +29,48 @@ export class UsersController {
     @Get()
     @ApiOperation({summary: 'Получение всех пользователей'})
     @ApiResponse({status: 200, type: User})
+    @UseGuards(BanGuard)
     getAll(){
         return this.usersService.getAllUsers()
     }
 
     @Post('/role')
     @Roles("ADMIN")
-    @UseGuards(RoleGuard)
-    @ApiOperation({summary: 'Добавление роли'})
+    @UseGuards(RoleGuard, BanGuard)
+    @UsePipes(new ValidationPipe())
+    @ApiOperation({summary: 'Добавление роли пользователю'})
     @ApiResponse({status: 200, type: UserRole})
     addRole(@Body() dto: addRoleDto){
         return this.usersService.addRole(dto)
+    }
+
+    @Post('/role/remove')
+    @Roles("ADMIN")
+    @UseGuards(RoleGuard, BanGuard)
+    @UsePipes(new ValidationPipe())
+    @ApiOperation({summary: 'Удаление роли у пользователя'})
+    @ApiResponse({status: 200, type: UserRole})
+    removeRole(@Body() dto: addRoleDto){
+        return this.usersService.removeRole(dto)
+    }
+
+    @Post('/ban')
+    @Roles("ADMIN")
+    @UsePipes(new ValidationPipe())
+    @UseGuards(RoleGuard, BanGuard)
+    @ApiOperation({summary: 'Блокировка пользователя'})
+    @ApiResponse({status: 200, type: banDto})
+    banUser(@Body() dto: banDto){
+        return this.usersService.ban(dto)
+    }
+
+    @Post('/unban')
+    @Roles("ADMIN")
+    @UsePipes(new ValidationPipe())
+    @UseGuards(RoleGuard, BanGuard)
+    @ApiOperation({summary: 'Разблокировка пользователя'})
+    @ApiResponse({status: 200, type: banDto})
+    unbanUser(@Body() dto: banDto){
+        return this.usersService.unban(dto)
     }
 }

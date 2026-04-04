@@ -47,8 +47,8 @@ export class UsersService {
 
     
 
-    async getProfile(name: string){
-        const user = await this.UserModel.findOne({where: {name}, attributes: { exclude: ['password', 'refreshToken', 'createdAt', 'updatedAt'] }})
+    async getProfile(id: number){
+        const user = await this.UserModel.findOne({where: {id}, attributes: { exclude: ['password', 'refreshToken', 'createdAt', 'updatedAt', 'roles'] }, include: {all: true}})
         return user
     }
 

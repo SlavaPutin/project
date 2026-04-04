@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/UserCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -63,12 +63,12 @@ export class AuthController {
         return this.authService.refresh(refreshToken);
     }
 
-    @Get('/profile')
+    @Get('/:id')
     @ApiOperation({summary: 'Профиль'})
     @ApiResponse({status: 200, type: User})
     @UseGuards(AuthGuard('jwt'), BanGuard)
-    profile(@Body('name') name: string){
-        return this.authService.profile(name)
+    profile(@Param('id') id: number){
+        return this.authService.profile(id)
     }
 
     @Post('/logout')

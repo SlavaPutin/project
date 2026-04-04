@@ -7,6 +7,12 @@ import { RoleModule } from './role/role.module';
 import { Role } from './role/role.model';
 import { UserRole } from './role/user-role.model';
 import { AuthModule } from './auth/auth.module';
+import { PostModule } from './post/post.module';
+import { Post } from './post/post.model';
+import * as path from 'path'
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { ComentModule } from './coment/coment.module';
+import { Coment } from './coment/coment.model';
 
 @Module({
   imports: [
@@ -20,7 +26,7 @@ import { AuthModule } from './auth/auth.module';
       username: process.env.USERNAME_DB,
       password: process.env.PASSWORD,
       database: process.env.DATABASE,
-      models: [User, Role, UserRole],
+      models: [User, Role, UserRole, Post, Coment],
       autoLoadModels: true, // автоматически загружает модели из папок
       synchronize: true,    // синхронизирует схему БД с моделями (не для production!)
       sync: { alter: true }
@@ -28,6 +34,11 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     RoleModule,
     AuthModule,
+    PostModule,
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
+    }),
+    ComentModule
   ],
   controllers: [],
   providers: [],

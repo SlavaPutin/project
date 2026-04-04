@@ -1,4 +1,4 @@
-import { forwardRef, Module } from '@nestjs/common';
+import { forwardRef, Module, Post } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { SequelizeModule } from '@nestjs/sequelize';
@@ -7,6 +7,7 @@ import { Role } from 'src/role/role.model';
 import { UserRole } from 'src/role/user-role.model';
 import { RoleModule } from 'src/role/role.module';
 import { AuthModule } from 'src/auth/auth.module';
+import { Coment } from 'src/coment/coment.model';
 
 @Module({
   controllers: [UsersController],

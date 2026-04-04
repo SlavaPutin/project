@@ -1,5 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, Table, Model, BelongsToMany } from "sequelize-typescript";
+import { Column, DataType, Table, Model, BelongsToMany, HasMany } from "sequelize-typescript";
+import { Coment } from "src/coment/coment.model";
+import { Post } from "src/post/post.model";
 import { Role } from "src/role/role.model";
 import { UserRole } from "src/role/user-role.model";
 
@@ -35,7 +37,14 @@ export class User extends Model<User, CreateUserAttr>{
     refreshToken: string | null;
 
     @BelongsToMany(() => Role, () => UserRole)
+    @ApiProperty({example: 'USER, ADMIN', description: "Роли"})
     role: Role[]
 
-    
+    @HasMany(() => Post)
+    @ApiProperty({example: 'Mem', description: "Посты пользователя"})
+    posts: Post[]
+
+    @HasMany(() => Coment)
+    @ApiProperty({example: 'Коментарий', description: "Коментарии пользователя"})
+    coments: Coment[]
 }

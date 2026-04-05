@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RoleGuard } from 'src/auth/Guards/roles.guard';
+import { PostLike } from './like.model';
 
 @UseGuards(AuthGuard('jwt'), BanGuard)
 @Controller('post')
@@ -54,6 +55,8 @@ export class PostController {
         return this.postService.findPostById(postId)
     }
 
+    @ApiOperation({summary: 'Поставить убрать лайк'})
+    @ApiResponse({status: 200, type: PostLike})
     @Post('/:id/like')
     async toggleLike(
         @Param('id') postId: number, 

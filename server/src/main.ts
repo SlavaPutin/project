@@ -19,7 +19,11 @@ async function start() {
         .addTag('Memo')
         .build()
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/api/docs', app, document)
+  SwaggerModule.setup('/api/docs', app, document);
+  app.enableCors({
+    credentials: true, // разрешаем куки
+    origin: process.env.FRONT_URL // адрес фронта
+  });
   await app.listen(PORT, () => {console.log(`Сервер запущен на ${PORT}`)});
 }
 start();

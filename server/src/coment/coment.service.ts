@@ -4,13 +4,15 @@ import { Coment } from './coment.model';
 import { writeComentDto } from './dto/writeComent.dto';
 import { UsersService } from 'src/users/users.service';
 import { PostService } from 'src/post/post.service';
+import { ComentLike } from './like.model';
 
 @Injectable()
 export class ComentService {
 
     constructor(@InjectModel(Coment) private comentModel: typeof Coment,
                 private userService: UsersService,
-                private postService: PostService
+                private postService: PostService,
+                @InjectModel(ComentLike) private comentLikeModel : typeof ComentLike
 ){}
 
     async write(dto: writeComentDto, postId: number, userId: number){
@@ -36,5 +38,20 @@ export class ComentService {
             return {message: "Коментарий успешно удален"}
         }
         throw new HttpException("Вы не можете удалить этот коментарий", HttpStatus.BAD_REQUEST)
+    }
+
+
+    async toggleLike(comentId: number, userId: number) {
+        const existingLike = await this.comentLikeModel.findOne({
+            where: { comentId, userId }
+        });
+
+        if (existingLike) {
+            await existingLike.destroy();
+            return { liked: false, message: "Лайк удален" };
+        }
+
+        await this.comentLikeModel.create({ comentId, userId });
+        return { liked: true, message: "Лайк поставлен" };
     }
 }

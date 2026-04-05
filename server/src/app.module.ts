@@ -13,6 +13,8 @@ import * as path from 'path'
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ComentModule } from './coment/coment.module';
 import { Coment } from './coment/coment.model';
+import { PostLike } from './post/like.model';
+import { ComentLike } from './coment/like.model';
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import { Coment } from './coment/coment.model';
       username: process.env.USERNAME_DB,
       password: process.env.PASSWORD,
       database: process.env.DATABASE,
-      models: [User, Role, UserRole, Post, Coment],
+      models: [User, Role, UserRole, Post, Coment, PostLike, ComentLike],
       autoLoadModels: true, // автоматически загружает модели из папок
       synchronize: true,    // синхронизирует схему БД с моделями (не для production!)
       sync: { alter: true }
@@ -38,7 +40,7 @@ import { Coment } from './coment/coment.model';
     ServeStaticModule.forRoot({
       rootPath: path.resolve(__dirname, 'static'),
     }),
-    ComentModule
+    ComentModule,
   ],
   controllers: [],
   providers: [],

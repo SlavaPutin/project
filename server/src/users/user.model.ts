@@ -1,6 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, Table, Model, BelongsToMany, HasMany } from "sequelize-typescript";
 import { Coment } from "src/coment/coment.model";
+import { ComentLike } from "src/coment/like.model";
+import { PostLike } from "src/post/like.model";
 import { Post } from "src/post/post.model";
 import { Role } from "src/role/role.model";
 import { UserRole } from "src/role/user-role.model";
@@ -18,11 +20,11 @@ export class User extends Model<User, CreateUserAttr>{
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     @ApiProperty({example: 'USER', description: "Имя пользователя"})
-    name: string;
+    name!: string;
 
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({example: '12345', description: "Пароль"})
-    password: string;
+    password!: string;
 
     @Column({type: DataType.BOOLEAN, defaultValue: false})
     @ApiProperty({example: 'true', description: "Забанен ли"})
@@ -30,21 +32,27 @@ export class User extends Model<User, CreateUserAttr>{
 
     @Column({type: DataType.STRING, allowNull: true})
     @ApiProperty({example: 'Просто так', description: "Причина бана"})
-    banReason: string | null;
+    banReason!: string | null;
     
     @Column({ type: DataType.STRING, allowNull: true })
     @ApiProperty({example: 'Данные токена', description: "Токен с помощью которого обновляется access токен"})
-    refreshToken: string | null;
+    refreshToken!: string | null;
 
     @BelongsToMany(() => Role, () => UserRole)
     @ApiProperty({example: 'USER, ADMIN', description: "Роли"})
-    role: Role[]
+    role!: Role[]
 
     @HasMany(() => Post)
     @ApiProperty({example: 'Mem', description: "Посты пользователя"})
-    posts: Post[]
+    posts!: Post[]
 
     @HasMany(() => Coment)
     @ApiProperty({example: 'Коментарий', description: "Коментарии пользователя"})
-    coments: Coment[]
+    coments!: Coment[];
+
+    @BelongsToMany(() => Post, () => PostLike)
+    likedPosts!: Post[];
+
+    @BelongsToMany(() => Coment, () => ComentLike)
+    likedComents!: Coment[];
 }

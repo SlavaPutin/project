@@ -13,11 +13,11 @@ export class Role extends Model<Role, CreateRoleAttr>{
     declare id: number;
 
     @Column({type: DataType.STRING, unique: true, allowNull: false})
-    value: string;
+    value!: string;
 
     @Column({type: DataType.STRING, allowNull: false})
-    description: string;
+    description!: string;
 
     @BelongsToMany(() => User, () => UserRole)
-    user: User[]
+    user!: User[]
 }

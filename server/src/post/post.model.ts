@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Column, DataType, Table, Model, BelongsToMany, BelongsTo, ForeignKey, HasMany } from "sequelize-typescript";
 import { Coment } from "src/coment/coment.model";
 import { User } from "src/users/user.model";
+import { PostLike } from "./like.model";
 
 interface CreatePostAttr{
     title: string;
@@ -17,22 +18,26 @@ export class Post extends Model<Post, CreatePostAttr>{
 
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({example: 'Mem', description: "Название мема"})
-    title: string;
+    title!: string;
     
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({example: 'Mem.jpg', description: "Картинка"})
-    image: string
+    image!: string;
+
 
     @ForeignKey(() => User)
-    @Column({type: DataType.INTEGER})
+    @Column({type: DataType.INTEGER, allowNull: false})
     @ApiProperty({example: '1', description: "Id пользователя, который создал"})
-    userId: number;
+    userId!: number;
 
     @BelongsTo(() => User)
     @ApiProperty({example: 'USER', description: "Автор"})
-    author: User;
+    author!: User;
 
     @HasMany(() => Coment)
     @ApiProperty({example: 'Коментарий', description: "Коментарии под постом"})
-    coments: Coment[]
+    coments!: Coment[]
+    
+    @BelongsToMany(() => User, () => PostLike)
+    likedBy!: User[];
 }

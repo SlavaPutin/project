@@ -83,6 +83,7 @@ export class UsersService {
         user.banned = true
         user.banReason = dto.banReason
         await user.save()
+        
         return user; 
     }
     

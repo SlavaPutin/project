@@ -5,6 +5,8 @@ import { createPostDto } from './dto/createPost.dto';
 import { BanGuard } from 'src/auth/Guards/ban.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Roles } from 'src/auth/roles-auth.decorator';
+import { RoleGuard } from 'src/auth/Guards/roles.guard';
 
 @UseGuards(AuthGuard('jwt'), BanGuard)
 @Controller('post')
@@ -28,12 +30,21 @@ export class PostController {
     @Post('/:id')
     @ApiOperation({summary: 'удаление поста'})
     @ApiResponse({status: 200, type: Post})
-    @UseInterceptors(FileInterceptor('image'))
     removePost(@Param('id') postId: number,
                @Req() req
     ){
         const userId = req.user.id
         return this.postService.removePost(postId, userId)
+    } 
+
+    @Post('/:id')
+    @Roles("ADMIN")
+    @UseGuards(RoleGuard)
+    @ApiOperation({summary: 'удаление поста админом'})
+    @ApiResponse({status: 200, type: Post})
+    removePostAdmin(@Param('id') postId: number
+    ){
+        return this.postService.removePostAdmin(postId)
     } 
 
     @Get('/:id')
@@ -42,4 +53,15 @@ export class PostController {
     getPost(@Param('id') postId: number){
         return this.postService.findPostById(postId)
     }
+
+    @Post('/:id/like')
+    async toggleLike(
+        @Param('id') postId: number, 
+        @Req() req: any
+    ) {
+        const userId = req.user.id;
+        return this.postService.toggleLike(postId, userId);
+    }
+
+    
 }

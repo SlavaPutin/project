@@ -7,12 +7,13 @@ import { User } from 'src/users/user.model';
 import { AuthModule } from 'src/auth/auth.module';
 import { UsersModule } from 'src/users/users.module';
 import { PostModule } from 'src/post/post.module';
+import { ComentLike } from './like.model';
 
 @Module({
   controllers: [ComentController],
   providers: [ComentService],
   imports: [
-    SequelizeModule.forFeature([Coment]),
+    SequelizeModule.forFeature([Coment, ComentLike]),
     AuthModule,
     UsersModule,
     PostModule

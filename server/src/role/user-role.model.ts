@@ -12,10 +12,10 @@ export class UserRole extends Model<UserRole>{
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})
     @ApiProperty({example: '2', description: "Айди пользователя, которому принадлежит роль"})
-    userId: number;
+    userId!: number;
 
     @ForeignKey(() => Role)
     @Column({type: DataType.INTEGER, allowNull: false})
     @ApiProperty({example: '3', description: "Айди роли"})
-    roleId: number;
+    roleId!: number;
 }

@@ -28,4 +28,13 @@ export class ComentController {
         const userId = req.user.id
         return this.comentService.remove(comentId, userId)
     }
+
+    @Post('/:id/like')
+    async toggleLike(
+        @Param('id') comentId: number, 
+        @Req() req: any
+    ) {
+        const userId = req.user.id;
+        return this.comentService.toggleLike(comentId, userId);
+    }
 }

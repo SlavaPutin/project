@@ -6,7 +6,7 @@ import '../style/Login-Registration.css'
 import AuthService from "../services/authService.ts";
 import { Link } from "react-router-dom";
 
-function Login() {
+function Registration() {
     const {isAuth, setIsAuth} = useContext(AuthContext)
     const {login, setLogin} = useContext(loginName)
     const [loginn, setLoginn] = useState('')
@@ -16,7 +16,7 @@ function Login() {
         event.preventDefault();
         if (loginn !== '' && password.length >= 5) {
             try {
-                const response = await AuthService.login({ name: loginn, password });
+                const response = await AuthService.registration({ name: loginn, password });
                 if (response && response.data) {
                     setIsAuth(true);
                     localStorage.setItem("token", response.data.accessToken);
@@ -32,16 +32,15 @@ function Login() {
     };
 
     return(
-        <div className="Login">
+        <div className="Registration">
             <h1>Страница для логина</h1>
             <form onSubmit={submit}>
                 <MyInput type="text" placeholder="Name" value={loginn} onChange={(e) => setLoginn(e.target.value)} />
                 <MyInput type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
                 <MyButton>Log in</MyButton>
-                <h4>Нет аккаунта? <Link to ={'/registration'}>Регистрация</Link></h4>
+                <h4>Есть аккаунт? <Link to ={'/login'}>Вход</Link></h4>
             </form>
         </div>
-    )
-};
+    )};
 
-export default Login;
+export default Registration;

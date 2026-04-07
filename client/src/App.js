@@ -20,7 +20,7 @@ function App() {
   const [isAuth, setIsAuth] = useState(false)
   const [login, setLogin] =useState('')
   useEffect(() => {
-    if(localStorage.getItem('auth')) {
+    if(localStorage.getItem('token')) {
       setIsAuth(true);
     }
   }, [])

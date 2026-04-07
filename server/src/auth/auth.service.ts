@@ -104,8 +104,8 @@ export class AuthService {
 
     async logout(name: string){
         try{
-            const user = await this.userService.removeToken(name)
-            return user
+            await this.userService.removeToken(name)
+            return {message: "Выход успешен"}
         } catch(e){
             throw new UnauthorizedException()
         }

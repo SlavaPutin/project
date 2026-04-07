@@ -7,9 +7,6 @@ const Meme = ({img, like, setLike, title, id}) => {
 
     const serverUrl = API_URL + '/'; 
     const fullImgUrl = serverUrl + img;
-    useEffect(() => {
-        console.log(img, fullImgUrl, serverUrl)
-    }, [])
     
     
 

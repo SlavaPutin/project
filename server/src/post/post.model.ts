@@ -24,6 +24,9 @@ export class Post extends Model<Post, CreatePostAttr>{
     @ApiProperty({example: 'Mem.jpg', description: "Картинка"})
     image!: string;
 
+    @Column({type: DataType.INTEGER, allowNull: false, defaultValue: 0})
+    @ApiProperty({example: '1', description: "Количество лайков"})
+    like!: number;
 
     @ForeignKey(() => User)
     @Column({type: DataType.INTEGER, allowNull: false})

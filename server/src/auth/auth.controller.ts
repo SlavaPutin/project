@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Req, Res, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/users/dto/UserCreate.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -58,9 +58,13 @@ export class AuthController {
     @Post('/refresh')
     @ApiOperation({summary: 'Обновление Access токена'})
     @ApiResponse({status: 200, type: AuthResponseDto})
-    @UseGuards(AuthGuard('jwt-refresh'), BanGuard)
-    async refresh(@Body('refreshToken') refreshToken: string) {
-        return this.authService.refresh(refreshToken);
+    @UseGuards(AuthGuard('jwt-refresh'))
+    async refresh(@Req() req: any, @Res({ passthrough: true }) res: any) {
+        const { refreshToken } = req.user; 
+        const tokens = await this.authService.refresh(refreshToken);
+
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, path: '/' });
+        return tokens;
     }
 
     @Get('/:id')
@@ -75,7 +79,7 @@ export class AuthController {
     @ApiOperation({summary: 'Выход'})
     @ApiResponse({status: 200, type: User})
     @UseGuards(AuthGuard('jwt'), BanGuard)
-    logout(@Body('name') name: string,
+    logout(@Req() req,
         @Res({ passthrough: true }) response: express.Response
 ){
 
@@ -84,6 +88,7 @@ export class AuthController {
         secure: false, // должно быть так же, как при login
         path: '/',     // обязательно тот же путь
     });
+    const name = req.user.name
     return this.authService.logout(name)
     }
 }

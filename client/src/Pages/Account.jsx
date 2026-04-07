@@ -3,14 +3,19 @@ import MyButton from "../components/UI/Button/MyButton";
 import { AuthContext, loginName } from "../Context/Context";
 import { Link } from "react-router-dom";
 import '../style/Account.css'
+import AuthService from "../services/authService.ts";
 
 function Account() {
     const {isAuth, setIsAuth} = useContext(AuthContext)
     const {login, setLogin} = useContext(loginName)
-    const leave =(e) =>{
-        e.preventDefault()
-        setIsAuth(false)
-        localStorage.removeItem('auth', 'true')
+    const leave = async (e) => {
+        e.preventDefault();
+        try {
+            await AuthService.logout();
+            await setIsAuth(false)
+        } catch (e) {
+            console.log("Сессия на сервере уже могла истечь");
+        }
     }
 
     return(

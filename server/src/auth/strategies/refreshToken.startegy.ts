@@ -8,14 +8,16 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: (req: Request) => {
+        return req?.cookies?.['refreshToken'] || null;
+      },
       secretOrKey: process.env.SECRET_KEY_REFRESH || 'rt-secret',
-      passReqToCallback: true, // Позволяет получить токен в методе validate
+      passReqToCallback: true,
     });
   }
 
   validate(req: Request, payload: any) {
-    const refreshToken = req.get('Authorization')?.replace('Bearer', '').trim();
+    const refreshToken = req.cookies?.['refreshToken'];
     return { ...payload, refreshToken };
   }
 }

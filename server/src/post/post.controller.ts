@@ -9,7 +9,7 @@ import { Roles } from 'src/auth/roles-auth.decorator';
 import { RoleGuard } from 'src/auth/Guards/roles.guard';
 import { PostLike } from './like.model';
 
-// @UseGuards(AuthGuard('jwt'), BanGuard)
+@UseGuards(AuthGuard('jwt'), BanGuard)
 @Controller('post')
 export class PostController {
 

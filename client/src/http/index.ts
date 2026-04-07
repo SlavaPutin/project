@@ -7,34 +7,39 @@ const $api = axios.create({
 })
 
 $api.interceptors.request.use((config) => {
-    // Используем опциональную цепочку или проверку, чтобы TS не ругался
-    if (config.headers) {
-        config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    const token = localStorage.getItem('token');
+    if (config.headers && token) {
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
-}); //Автоматическая подстановка токена
+});
 
 $api.interceptors.response.use((config) => {
     return config
-}, async (error) => { //если прилетела ошибка то запускаем эту функцию
+}, async (error) => {
     const originalRequest = error.config;
-    // если сервера нет, error.response будет undefined
+    
     if (!error.response) {
        console.error("Сервер не отвечает или ошибка сети");
        throw error;
     }
     
-    // Проверяем если 401 ошибка и мы еще не пробовали обновиться
     if (error.response.status === 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true;
         try {
-            // Идем на бэкенд за новым токеном куки refreshToken улетит сама
-            const response = await axios.post(`${API_URL}/auth/refresh`, { withCredentials: true });
-            localStorage.setItem('token', response.data.accessToken);
-            // Повторяем изначальный запрос
+            const response = await axios.post(`${API_URL}/auth/refresh`, {}, { withCredentials: true });
+            
+            const newAccessToken = response.data.accessToken;
+            localStorage.setItem('token', newAccessToken);
+            
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+            
             return $api.request(originalRequest);
         } catch (e) {
-            console.log('НЕ АВТОРИЗОВАН');
+            console.log('НЕ АВТОРИЗОВАН: Рефреш токен просрочен');
+            localStorage.removeItem('token');
+            localStorage.removeItem('auth');
+            throw e;
         }
     }
     throw error;

@@ -10,7 +10,7 @@ interface SendLikeAttr{
 
 
 
-@Table({ tableName: 'post_likes', createdAt: false, updatedAt: false })
+@Table({ tableName: 'coment_likes', createdAt: false, updatedAt: false })
 export class ComentLike extends Model<ComentLike, SendLikeAttr> {
     @ForeignKey(() => User)
     @Column({ type: DataType.INTEGER })

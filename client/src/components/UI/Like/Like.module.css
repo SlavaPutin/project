@@ -1,0 +1,27 @@
+.like{
+    background: none;
+    border: none;
+    max-height: 24px;
+    cursor: pointer;
+}
+
+.likesvg{
+    fill: none
+}
+
+.likesvgactive{
+    fill: black
+}
+
+
+.wraplike{
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    right: 10px;
+    align-items: center;
+}
+
+.counter{
+    font-weight: 200;
+}

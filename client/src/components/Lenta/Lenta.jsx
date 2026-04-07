@@ -7,7 +7,7 @@ const Lenta = ({memes, setLike}) => {
     return(
         <div className='lenta'>
             {memes.map(meme =>
-              <Meme id={meme.id} key={meme.id} title={meme.title} img={meme.img} like={meme.like} setLike={setLike}/>
+              <Meme id={meme.id} key={meme.id} title={meme.title} img={meme.image} like={meme.like} setLike={setLike}/>
             )}       
         </div>
     )

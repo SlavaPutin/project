@@ -31,14 +31,14 @@ import { ComentLike } from './coment/like.model';
       models: [User, Role, UserRole, Post, Coment, PostLike, ComentLike],
       autoLoadModels: true, // автоматически загружает модели из папок
       synchronize: true,    // синхронизирует схему БД с моделями (не для production!)
-      sync: { alter: true }
+      sync: { alter: true}
     }),
     UsersModule,
     RoleModule,
     AuthModule,
     PostModule,
     ServeStaticModule.forRoot({
-      rootPath: path.resolve(__dirname, 'static'),
+      rootPath: path.resolve(process.cwd(), 'static'),
     }),
     ComentModule,
   ],

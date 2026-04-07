@@ -6,5 +6,5 @@ export class createPostDto{
     @IsNotEmpty()
     @IsString()
     @ApiProperty({example: 'Mem', description: "название поста"})
-    readonly title: string;
+    readonly title!: string;
 }

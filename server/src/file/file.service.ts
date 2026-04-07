@@ -9,7 +9,7 @@ export class FileService {
     async createdFile(file): Promise<string>{
         try{
             const fileName = uuid.v4() + '.jpg'
-            const filePath = path.resolve(__dirname, '..', 'static')
+            const filePath = path.resolve(process.cwd(), 'static');
             if(!fs.existsSync(filePath)){
                 fs.mkdirSync(filePath, {recursive: true})//создаем папку, recursive - если какойто папки в пути не будет то nodejs создаст ее
             }

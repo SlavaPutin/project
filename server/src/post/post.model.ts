@@ -31,7 +31,7 @@ export class Post extends Model<Post, CreatePostAttr>{
     userId!: number;
 
     @BelongsTo(() => User)
-    @ApiProperty({example: 'USER', description: "Автор"})
+    @ApiProperty({ type: () => User, description: "Автор" })
     author!: User;
 
     @HasMany(() => Coment)

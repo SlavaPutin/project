@@ -16,14 +16,11 @@ export class UsersService {
 
     async create(dto: CreateUserDto){
         try{
-            const user = await this.UserModel.create(dto)
             const role = await this.roleService.getRoleByvalue('USER')
-            if(!user){
-                throw new HttpException('Не удалось создать аккаунт', HttpStatus.BAD_REQUEST)
-            }
             if(!role){
                 throw new HttpException('Роль не найдена', HttpStatus.NOT_FOUND)
             }
+            const user = await this.UserModel.create(dto)
             await user.$set('role', [role.id])
             return await user.reload({ include: { all: true } });
         } catch(e){

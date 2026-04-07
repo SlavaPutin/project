@@ -35,11 +35,11 @@ export class Coment extends Model<Coment, CreateComentAttr>{
     userId!: number
 
     @BelongsTo(() => Post)
-    @ApiProperty({example: 'Mem', description: "Пост под которым коментарий"})
+    @ApiProperty({ type: () => Post })
     post!: Post
 
     @BelongsTo(() => User)
-    @ApiProperty({example: 'USER', description: "Автор коментария"})
+    @ApiProperty({ type: () => User})
     author!: User
 
     @BelongsToMany(() => User, () => ComentLike)

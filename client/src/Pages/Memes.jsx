@@ -13,16 +13,27 @@ import MyInput from '../components/UI/MyInput/MyInput';
 import MySelecter from '../components/UI/Selecter/MySelecter';
 import { useSort } from '../hooks/UseSort';
 import SortAndSearch from '../components/SortandSearch/SortAndSearch';
+import PostService from '../services/postServices.ts';
+
 
 function MemesPage() {
-  const [memes, setMemes]= useState([
-    {id: 1, title: 'Pepe', img:'https://avatars.mds.yandex.net/i?id=6c3da179033788d27279314db3382f93_l-5226501-images-thumbs&n=13', like: 279 },
-    {id: 2, title: 'Chill guy', img:'https://cdn.sportmaster.ru/upload/content/mediahab/prod/be279142-3a96-4081-aac2-956fcf3c6d91.jpg', like: 888 },
-    {id: 3, title: 'Kat', img:'https://i.pinimg.com/originals/cf/f8/fc/cff8fc7c8c6130be56e1bb0feac88f4e.png?nii=t', like: 888 }
-  ]);
+  const [memes, setMemes]= useState([]);
   const [modal, setModal] = useState(false);
   const[query, setQuery] = useState('');
   const [sort, setSort] = useState('');
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try{
+        const response = await PostService.fetchPosts()
+        setMemes(response.data)
+      } catch(e){
+        console.error("Ошибка загрузки:", e)
+      }
+    }
+    loadPosts();
+  }, [])
+
 
   const SortMeme = useSort(memes, sort, query);
 
@@ -32,8 +43,7 @@ function MemesPage() {
             meme.id == id ? { ...meme, like: likesCount } : meme
         )
     );
-    console.log(memes, id, typeof id, likesCount)
-};
+  };
 
   
 

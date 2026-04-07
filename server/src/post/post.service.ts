@@ -15,6 +15,11 @@ export class PostService {
                 @InjectModel(PostLike) private postLikeModel: typeof PostLike
 ){}
 
+    async getAllPost(){
+        const posts = await this.postModel.findAll()
+        return posts
+    }
+
     async createPost( dto: createPostDto, image: any, userId: number){
         const user = await this.userService.getProfile(userId)
         if(!user){

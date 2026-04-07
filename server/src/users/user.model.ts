@@ -43,7 +43,7 @@ export class User extends Model<User, CreateUserAttr>{
     role!: Role[]
 
     @HasMany(() => Post)
-    @ApiProperty({example: 'Mem', description: "Посты пользователя"})
+    @ApiProperty({ type: () => [Post], description: "Посты пользователя" })
     posts!: Post[]
 
     @HasMany(() => Coment)

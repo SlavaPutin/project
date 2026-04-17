@@ -43,4 +43,7 @@ export class Post extends Model<Post, CreatePostAttr>{
     
     @BelongsToMany(() => User, () => PostLike)
     likedBy!: User[];
+
+    @Column(DataType.VIRTUAL)
+    isLikedByMe!: boolean;
 }

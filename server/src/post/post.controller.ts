@@ -56,10 +56,10 @@ export class PostController {
     }
 
     @Get('')
-    @ApiOperation({summary: 'Получение поста'})
+    @ApiOperation({summary: 'Получение постов'})
     @ApiResponse({status: 200, type: Post})
-    getAllPost(){
-        return this.postService.getAllPost()
+    getAllPost(@Req() req){
+        return this.postService.getAllPost(req.user.id)
     }
 
     @ApiOperation({summary: 'Поставить убрать лайк'})

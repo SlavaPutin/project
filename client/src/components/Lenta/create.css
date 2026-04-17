@@ -1,0 +1,105 @@
+@import "C:\Users\slawa\Desktop\project\client\src\style\root.css";
+
+.create{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+}
+
+.input-name-meme{
+    width: 100%;
+    display: flex;
+    gap: 18px;
+    min-width: 0;
+    
+}
+
+.name-meme{
+    background-color: var(--block-bg);
+    font-size: 16px;
+    opacity: 1;
+    border: none;
+    min-height: 40px;
+    max-height: 400px;
+    position: relative;
+    width: 100%;
+    padding: 12px;
+    outline: none;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    background: transparent;
+    overflow-y: auto;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    flex: 1;
+    min-width: 0;
+    padding-top: 8px;
+    overflow-y: auto;
+}
+
+.name-meme::placeholder {
+    color: var(--text-secondary);
+}
+
+.avatar{
+    width: 40px;
+    height: 40px;
+}
+
+.wrap-create{
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 24px;
+    background-color: var(--block-bg);
+    border-radius: 36px;
+    overflow: hidden;
+}
+
+.wrap-file-upload{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 300px
+}
+
+.file-btn{
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    color: var(--text-secondary);
+    transition: color .2s ease, background .2s ease;
+    background: none;
+    cursor: pointer;
+}
+
+.upload-wrap{
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.upload-btn{
+    height: 48px;
+    padding: 0 24px;
+    font-size: 16px;
+    border-radius: 24px;
+    background: var(--btn-primary-bg);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: none;
+    font: inherit;
+    font-weight: 500;
+    transition: opacity .2s ease, background .2s ease;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}

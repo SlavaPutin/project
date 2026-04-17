@@ -2,11 +2,11 @@ import React, {useContext} from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { privateRouts, publicRouts } from "./route";
 import { AuthContext } from "../Context/Context";
+import { observer } from "mobx-react-lite";
+import UserStore from "../store/UserStore";
 
-const AppRouter = () => {
-
-    const {isAuth, setIsAuth} = useContext(AuthContext)
-
+const AppRouter = observer(() => {
+    const isAuth = UserStore.isAuth
     return(
         isAuth
         ? <Routes>
@@ -18,7 +18,7 @@ const AppRouter = () => {
             key = {route.path}
             />
             )}
-            <Route path="*" element={<Navigate to="/memes" />} />
+            <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         : <Routes>
             {publicRouts.map(route =>
@@ -32,6 +32,6 @@ const AppRouter = () => {
             <Route path='*' element={<Navigate to='/login'/>}/>
             </Routes>
     )
-}
+})
 
 export default AppRouter;

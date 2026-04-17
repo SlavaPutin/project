@@ -6,8 +6,8 @@ import MemePage from "../Pages/MemePage";
 import Registration from "../Pages/Registration";
 
 export const privateRouts = [
-    {path: '/memes', Component: MemesPage, exact:true},
-    {path: '/account', Component: Account, exact:true},
+    {path: '/', Component: MemesPage, exact:true},
+    {path: '/:id', Component: Account, exact:true},
     {path: '/memes/:id', Component: MemePage, exact: true }
 ]
 

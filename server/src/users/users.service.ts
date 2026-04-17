@@ -6,6 +6,8 @@ import { RoleService } from 'src/role/role.service';
 import * as bcrypt from 'bcryptjs'
 import { addRoleDto } from './dto/addRole.dto';
 import { banDto } from './dto/ban.dto';
+import { Role } from 'src/role/role.model';
+import { Post } from 'src/post/post.model';
 
 @Injectable()
 export class UsersService {
@@ -22,7 +24,7 @@ export class UsersService {
             }
             const user = await this.UserModel.create(dto)
             await user.$set('role', [role.id])
-            return await user.reload({ include: { all: true } });
+            return await user.reload({ include: {  model: Role }});
         } catch(e){
             console.log(e)
         }
@@ -38,14 +40,42 @@ export class UsersService {
     }
 
     async getUserByName(name: string){
-        const user = await this.UserModel.findOne({where: {name}, include: {all: true}})
+        const user = await this.UserModel.findOne({where: {name}, include: [{ all: true}]})
         return user
     }
 
     
 
     async getProfile(id: number){
-        const user = await this.UserModel.findOne({where: {id}, attributes: { exclude: ['password', 'refreshToken', 'createdAt', 'updatedAt', 'roles'] }, include: {all: true}})
+        const user = await this.UserModel.findOne({
+            where: { id },
+            attributes: { exclude: ['password', 'refreshToken'] },
+            include: [
+                {
+                    model: Post,
+                    as: 'likedPosts',
+                    include: [
+                        { 
+                            model: User, 
+                            as: 'author', 
+                            attributes: ['name'] 
+                        }
+                    ]
+                },
+                {
+                    model: Post,
+                    as: 'posts',
+                    include: [
+                        {
+                            model: User,
+                            as: 'author',
+                            attributes: ['name']
+                        }
+                    ]
+                },
+                { all: true } 
+            ]
+        });
         return user
     }
 
@@ -108,10 +138,8 @@ export class UsersService {
     }
 
     async updateRefreshToken(userId: number, refreshToken: string | null) {
-            const hashedToken = refreshToken ? await bcrypt.hash(refreshToken, 5) : null;
-            
             await this.UserModel.update(
-                { refreshToken: hashedToken }, 
+                { refreshToken: refreshToken }, 
                 { where: { id: userId } }
             );
         }

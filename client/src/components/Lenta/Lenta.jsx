@@ -1,14 +1,20 @@
-import React from "react"
-import MyButton from "../UI/Button/MyButton"
 import Meme from "../Meme"
+import Create from "./Create"
 
 
-const Lenta = ({memes, setLike}) => {
+const Lenta = ({memes}) => {
+
     return(
-        <div className='lenta'>
-            {memes.map(meme =>
-              <Meme id={meme.id} key={meme.id} title={meme.title} img={meme.image} like={meme.like} setLike={setLike}/>
-            )}       
+        <div className="center-wrap">
+            <div className="wrap-center-content">
+                <Create/>    
+                <div className="wrap-memes">
+                    {memes.map(meme => (
+                        <Meme key={meme.id} meme={meme}/>
+                    ))}       
+                </div> 
+            </div>
+            
         </div>
     )
 }

@@ -63,7 +63,7 @@ export class AuthController {
         const { refreshToken } = req.user; 
         const tokens = await this.authService.refresh(refreshToken);
 
-        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, path: '/' });
+        res.cookie('refreshToken', tokens.refreshToken, { httpOnly: true, path: '/', maxAge: 30 * 24 * 60 * 60 * 1000});
         return tokens;
     }
 

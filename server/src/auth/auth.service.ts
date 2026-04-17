@@ -24,14 +24,20 @@ export class AuthService {
                 throw new HttpException("Ошибка при создании пользователя", HttpStatus.INTERNAL_SERVER_ERROR);
             }
             const token = await this.generateToken(user)
-            return token
-    }
+            return {
+                ...token,
+                user
+        }
+}
 
     async login(dto: CreateUserDto){
         try{
             const user = await this.validateUser(dto)
             const token = await this.generateToken(user)
-            return token
+            return {
+                ...token,
+                user
+            }
         } catch(e){
             throw new HttpException("Не удалось войти", HttpStatus.UNAUTHORIZED)
         }
@@ -51,13 +57,13 @@ export class AuthService {
             const payload = {
                 id: user.id,
                 name: user.name,
-                roles: user.role,
+                roles: user.role?.map(r => r.value) || [],
                 ban: user.banned,
                 banReason: user.banReason
             };
             const [accessToken, refreshToken] = await Promise.all([
                 this.jwtService.signAsync(payload, { expiresIn: '15m', secret: process.env.SECRET_KEY_ACCESS }),
-                this.jwtService.signAsync(payload, { expiresIn: '7d', secret: process.env.SECRET_KEY_REFRESH }),
+                this.jwtService.signAsync(payload, { expiresIn: '7d', secret: process.env.SECRET_KEY_REFRESH || 'rt-secret' }),
             ]);
             await this.userService.updateRefreshToken(user.id, refreshToken);
             return { accessToken, refreshToken };
@@ -82,10 +88,9 @@ export class AuthService {
                 throw new UnauthorizedException();
             }
 
-            const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
-            if (!isMatch) {
-                throw new UnauthorizedException("Токен отозван или не совпадает");
-            }
+            if (refreshToken !== user.refreshToken) {
+                throw new UnauthorizedException("Токен не совпадает");
+            };
 
             return this.generateToken(user);
         }catch(e){

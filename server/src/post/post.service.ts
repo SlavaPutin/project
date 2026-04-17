@@ -5,6 +5,8 @@ import { createPostDto } from './dto/createPost.dto';
 import { UsersService } from 'src/users/users.service';
 import { FileService } from 'src/file/file.service';
 import { PostLike } from './like.model';
+import { User } from 'src/users/user.model';
+import { Coment } from 'src/coment/coment.model';
 
 @Injectable()
 export class PostService {
@@ -15,9 +17,27 @@ export class PostService {
                 @InjectModel(PostLike) private postLikeModel: typeof PostLike
 ){}
 
-    async getAllPost(){
-        const posts = await this.postModel.findAll()
-        return posts
+    async getAllPost(userId: number) {
+        const posts = await this.postModel.findAll({
+            include: [
+                { model: User, as: 'author', attributes: ['id', 'name'] },
+                { model: Coment },
+                { 
+                    model: User, 
+                    as: 'likedBy', 
+                    attributes: ['id'], // Нам нужны только ID для проверки
+                    through: { attributes: [] } 
+                }
+            ]
+        });
+
+        return posts.map(post => {
+            const postPlain = post.get({ plain: true }) as any;
+            postPlain.isLikedByMe = post.likedBy?.some(u => u.id === userId) || false;
+            // Удаляем массив пользователей, чтобы не перегружать ответ
+            delete postPlain.likedBy; 
+            return postPlain;
+        });
     }
 
     async createPost( dto: createPostDto, image: any, userId: number){
@@ -60,16 +80,21 @@ export class PostService {
     }
 
     async toggleLike(postId: number, userId: number) {
+        const post = await this.postModel.findByPk(postId);
+        if (!post) throw new HttpException("Пост не найден", HttpStatus.NOT_FOUND);
+
         const existingLike = await this.postLikeModel.findOne({
             where: { postId, userId }
         });
 
         if (existingLike) {
             await existingLike.destroy();
-            return { liked: false, message: "Лайк удален" };
+            await post.decrement('like')
+            return { liked: false, message: "Лайк удален", likesCount: post.like  };
         }
 
         await this.postLikeModel.create({ postId, userId });
-        return { liked: true, message: "Лайк поставлен" };
+        await post.increment('like');
+        return { liked: true, message: "Лайк поставлен", likesCount: post.like };
     }
 }

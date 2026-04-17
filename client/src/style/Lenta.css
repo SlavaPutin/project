@@ -1,38 +1,10 @@
-.lenta{display: grid;
-grid-template-columns: repeat(3, auto);
-justify-content: center;
-margin-top: 60px;
-align-items: center;
-gap: 55px;}
 
-.meme{display: flex;
-flex-direction: column;
-justify-content: space-between;
-align-items: center;
-background-color: lightgray;
-width: fit-content;
-padding: 20px 50px 10px;
-border-radius: 15px ;
-height: 475px;}
 
-.img-meme{
-    max-width: 310px;
-    max-height: 350px;
-    background-repeat: no-repeat;
-    border-radius: 15px;
-}
-
-.wpar-info{display: flex;
-flex-direction: column;
-justify-content: center;
-align-items: center;
-background-color: lightgray;
-gap: 15px;}
-
-.wrap-btns{
-    display: flex;
-    align-items: center;
-    position: relative;
+.wrap-memes{
     width: 100%;
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px
 }
+
+

@@ -27,6 +27,9 @@ export class RoleGuard implements CanActivate{
             }//разрешаем доступ если нету рекоратора занчит нечего проверять
             const req = context.switchToHttp().getRequest() //получаем запрос из контекста
             const authHeader = req.headers.authorization;//получаем authHeader из запроса
+            if (!authHeader) {
+                throw new UnauthorizedException({message: "Пользователь не авторизован"});
+            }
             const bearer = authHeader.split(' ')[0]
             const token = authHeader.split(' ')[1]//разделяем на Bearer и сам токен
 
@@ -38,7 +41,7 @@ export class RoleGuard implements CanActivate{
                 secret: process.env.SECRET_KEY_ACCESS
             });//деокдируем тоукен
             req.user = user;//перезаписываем реквест
-            return user.roles.some(role => requiredRoles.includes(role.value));//проверка есть ли у пользователя необходимая роль
+            return user.roles.some(role => requiredRoles.includes(role));//проверка есть ли у пользователя необходимая роль
         } catch(e){
             throw new HttpException("у вас нету доступа", HttpStatus.FORBIDDEN)
         }

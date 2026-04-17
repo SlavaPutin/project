@@ -1,0 +1,85 @@
+@import "C:\Users\slawa\Desktop\project\client\src\style\root.css";
+
+.wrap-modal-center{
+    position: fixed;
+    inset: 0;
+    background: #0006;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    animation: BD6HV-d7 .2s ease;
+    overflow: hidden;
+}
+
+.wrap-modal{
+    max-width: min(1100px, 100vw - 32px);
+    position: relative;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    animation: modal .2s ease;
+    min-width: 600px;
+}
+
+@keyframes modal{
+0% {
+    opacity: 0;
+    transform: scale(1.2);
+}
+100% {
+    opacity: 1;
+    transform: scale(1);
+}}
+
+.exit-modal{
+    align-self: flex-end;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: color .2s ease, background .2s ease;
+}
+
+.wrap-input-new-name{
+    border-radius: 36px;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    background-color: var(--block-bg);
+}
+
+.new-name-input{
+    width: 75%;
+    font: inherit;
+    background-color: var(--block-bg);
+    color: var(--text-secondary);
+    border: 2px solid var(--text-secondary);
+    border-radius: 6px;
+}
+
+.new-name-input::placeholder{
+    padding-left: 5px;
+}
+
+.save-name-btn{
+        height: 40px;
+    padding: 0 20px;
+    font-size: 14px;
+    border-radius: 20px;
+    background: var(--btn-primary-bg);
+    color: var(--btn-primary-text);
+}

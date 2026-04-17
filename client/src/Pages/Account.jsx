@@ -7,11 +7,16 @@ import { useParams } from "react-router-dom";
 import Create from "../components/Lenta/Create";
 import Meme from "../components/Meme";
 import Loader from "../components/UI/loader/Loader";
+import Lenta from "../components/Lenta/Lenta";
+import LentaInAcc from "../components/Lenta/LentaInAcc";
+import ModalNewName from "../components/Modal/ModalNewName";
 
 const Account = observer(() => {
 
     const isLoading = UserStore.isLoading
     const [likesPosts, setLikesPosts] = useState("posts")
+    const [modal,setModal] = useState(false)
+    const [newName, setNewName] = useState('')
 
 
     const { id } = useParams(); 
@@ -19,24 +24,48 @@ const Account = observer(() => {
     const likedMemes = UserStore.user.likedPosts || []    
     const currentMemes = likesPosts === "posts" ? memes : likedMemes;
 
+    const matchId = UserStore.I.id == UserStore.user.id
+
+    const updateName = () => {
+        if (newName.length>0){
+            UserStore.updateName(newName)
+            setNewName('')
+            setModal(false)
+        }
+        
+    }
 
     const handleUpdateLike = (postId, likesCount, isLiked) => {
-        const post = UserStore.user.posts?.find(p => p.id === postId);
-        if (post) {
-            post.like = likesCount;
-            post.isLikedByMe = isLiked;
+        if (UserStore.user.posts) {
+            const index = UserStore.user.posts.findIndex(p => p.id === postId);
+            if (index !== -1) {
+                UserStore.user.posts[index] = { 
+                    ...UserStore.user.posts[index], 
+                    like: likesCount, 
+                    isLikedByMe: isLiked 
+                };
+            }
         }
-        const likedPost = UserStore.user.likedPosts?.find(p => p.id === postId);
-        if (likedPost) {
-            likedPost.like = likesCount;
-            likedPost.isLikedByMe = isLiked;
-            UserStore.user.likedPosts = UserStore.user.likedPosts?.filter(p => p.id !== postId);
+
+        if (UserStore.user.likedPosts) {
+            const index = UserStore.user.likedPosts.findIndex(p => p.id === postId);
+            if (index !== -1) {
+                UserStore.user.likedPosts[index] = { 
+                    ...UserStore.user.likedPosts[index], 
+                    like: likesCount, 
+                    isLikedByMe: isLiked 
+                };
+            }
         }
     };
 
     useEffect(() => {
         UserStore.getProfile(id)
     }, [id])
+    
+    useEffect(() => {
+        UserStore.getUser();
+    }, [])
 
     const switchLikeToPosts = () => {
         setLikesPosts('posts')
@@ -76,9 +105,11 @@ const Account = observer(() => {
                                                 </defs>
                                                 </svg>
                                             </div>
-                                            <div className="wrap-redact">
-                                                <button type="button" className="redact">Редактировать</button>
-                                            </div>
+                                            {matchId && <><div className="wrap-redact">
+                                                            <button type="button" className="redact" onClick={() => setModal(true)}>Редактировать</button>
+                                                        </div>
+                                                        <ModalNewName value={newName} setValue={setNewName} setVisible={setModal} style={{ display: modal ? "flex" : "none" }} onSave={updateName} visible={modal}/></>
+                                                        }
                                         </div>
                                         <div className="name-acc">
                                             <span>{UserStore.user.name}</span>
@@ -89,13 +120,10 @@ const Account = observer(() => {
                                         <button className="posts-btn" onClick={switchLikeToPosts}>Посты</button>
                                         <button className="likes-btn" onClick={switchPostsToLike}>Лайки</button>
                                     </div>
-                                    <Create />
+                                    {matchId && <Create/>}
                                     {currentMemes.length > 0 
-                                        ? <div className="wrap-memes">
-                                            {currentMemes.map(meme => <Meme key={meme.id} meme={meme} onLikeSuccess={handleUpdateLike} />)}
-                                        </div>
-                                        : <div className="wrap-error"><span>Тут пока пусто</span></div>
-                                    }
+                                        ? <LentaInAcc memes={currentMemes} onLikeSuccess={handleUpdateLike} isMatch={matchId}/>
+                                        : <div className="wrap-error"><span>Тут пока пусто</span></div>}
                                 </> 
                             ) 
                         }

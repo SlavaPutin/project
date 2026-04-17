@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ComentService } from './coment.service';
 import { writeComentDto } from './dto/writeComent.dto';
@@ -12,6 +12,18 @@ export class ComentController {
 
     constructor(private comentService: ComentService){}
 
+    @Get('/:postId')
+    @ApiOperation({summary: 'Получить коментарии'})
+    @ApiResponse({status: 200, type: Coment})
+    getComents(
+            @Param('postId') postId: number,
+            @Req() req
+    ){
+        const userId = req.user.id
+        return this.comentService.getComents(postId, userId)
+    }
+    
+
     @UsePipes(new ValidationPipe())
     @Post('/:postId')
     @ApiOperation({summary: 'Написать коментарий'})
@@ -21,7 +33,6 @@ export class ComentController {
             @Req() req
     ){
         const userId = req.user.id
-
         return this.comentService.write(dto, postId, userId)
     }
 

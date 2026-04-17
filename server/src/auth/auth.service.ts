@@ -98,9 +98,9 @@ export class AuthService {
         }
     }
 
-    async profile(id: number){
+    async profile(id: number, currentId:number){
         try{
-            const user = await this.userService.getProfile(id)
+            const user = await this.userService.getProfile(id, currentId)
             return user
         } catch(e){
             throw new HttpException("Не удалось найти пользователя", HttpStatus.NOT_FOUND)

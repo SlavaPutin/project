@@ -5,6 +5,7 @@ import { writeComentDto } from './dto/writeComent.dto';
 import { UsersService } from 'src/users/users.service';
 import { PostService } from 'src/post/post.service';
 import { ComentLike } from './like.model';
+import { User } from 'src/users/user.model';
 
 @Injectable()
 export class ComentService {
@@ -16,11 +17,7 @@ export class ComentService {
 ){}
 
     async write(dto: writeComentDto, postId: number, userId: number){
-        const user = await this.userService.getProfile(userId)
         const post = await this.postService.findPostById(postId)
-        if(!user){
-            throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND)
-        }
         if(!post){
             throw new HttpException("Пост не найден", HttpStatus.NOT_FOUND)
         }
@@ -42,16 +39,47 @@ export class ComentService {
 
 
     async toggleLike(comentId: number, userId: number) {
+        const coment = await this.comentModel.findByPk(comentId);
+        if (!coment) throw new HttpException("Коментарий не найден", HttpStatus.NOT_FOUND);
+
         const existingLike = await this.comentLikeModel.findOne({
             where: { comentId, userId }
         });
 
         if (existingLike) {
             await existingLike.destroy();
-            return { liked: false, message: "Лайк удален" };
+            await coment.decrement('like')
+            return { liked: false, message: "Лайк удален", likesCount: coment.like };
         }
 
         await this.comentLikeModel.create({ comentId, userId });
-        return { liked: true, message: "Лайк поставлен" };
+        await coment.increment('like');
+        return { liked: true, message: "Лайк поставлен", likesCount: coment.like };
+    }
+
+    async getComents(postId: number, userId: number) {
+        const coments = await this.comentModel.findAll({
+            where: { postId },
+            include: [
+                { model: User, as: 'author', attributes: ['id', 'name'] },
+                { 
+                    model: User, 
+                    as: 'likedBy', 
+                    attributes: ['id'],
+                    through: { attributes: [] } 
+                }
+            ],
+            order: [['createdAt', 'DESC']]
+        });
+
+        return coments.map(coment => {
+            const comentPlain = coment.get({ plain: true }) as any;
+            
+            comentPlain.isLikedByMe = coment.likedBy?.some(u => u.id === userId) || false;
+            
+            delete comentPlain.likedBy; 
+            
+            return comentPlain;
+        });
     }
 }

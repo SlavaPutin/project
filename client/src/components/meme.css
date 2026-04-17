@@ -96,7 +96,7 @@ button{
     cursor: pointer;
 }
 
-.like, .coment{
+.like, .coment, .delete{
     background: none;
     border: none;
     display: flex;
@@ -109,9 +109,16 @@ button{
     line-height: 100%;
     font-variant-numeric: tabular-nums;
     padding: 8px;
-
 }
 
+.delete{
+    transition: background-color .2s ease;
+    border-radius: 50%;
+}
+
+.delete:hover{
+    background-color: crimson;
+}
 
 
 .like-svg{    
@@ -121,3 +128,11 @@ button{
     border: none;
 }
 
+.wrap-meme-and-coments{
+    background-color: var(--block-bg);
+    border-radius: 36px 36px 0 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 80px;
+}

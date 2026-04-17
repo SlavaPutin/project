@@ -71,8 +71,12 @@ export class AuthController {
     @ApiOperation({summary: 'Профиль'})
     @ApiResponse({status: 200, type: User})
     @UseGuards(AuthGuard('jwt'), BanGuard)
-    profile(@Param('id') id: number){
-        return this.authService.profile(id)
+    profile(@Param('id') id: number,
+            @Req() req    
+){
+        const currentId = req.user.id
+        console.log(currentId)
+        return this.authService.profile(id, currentId)
     }
 
     @Post('/logout')

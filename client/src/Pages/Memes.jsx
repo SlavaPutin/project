@@ -10,18 +10,20 @@ import SideBar from '../components/Sidebar/Sidebar.jsx';
 import { observer } from 'mobx-react-lite';
 import PostStore from '../store/PostStore.js';
 import Loader from '../components/UI/loader/Loader.jsx';
+import UserStore from '../store/UserStore.js';
 
 
 const MemesPage = observer(() => {
   useEffect(() => {
     PostStore.fetchPosts();
+    UserStore.getUser();
   }, [])
 
   return (
       <div className='bodys'>
         <SideBar/>
         <div className='wrap-main'>
-        {PostStore.isLoading 
+        {PostStore.isLoading || !PostStore.posts 
           ? <Loader/>
           : <Lenta memes={PostStore.posts}/>   
         }

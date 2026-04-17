@@ -28,7 +28,7 @@ export class PostController {
         return this.postService.createPost(dto, image, userId)
     }
 
-    @Post('/:id')
+    @Post('/delete/:id')
     @ApiOperation({summary: 'удаление поста'})
     @ApiResponse({status: 200, type: Post})
     removePost(@Param('id') postId: number,
@@ -38,7 +38,7 @@ export class PostController {
         return this.postService.removePost(postId, userId)
     } 
 
-    @Post('/:id')
+    @Post('/admin/delete/:id')
     @Roles("ADMIN")
     @UseGuards(RoleGuard)
     @ApiOperation({summary: 'удаление поста админом'})

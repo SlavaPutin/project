@@ -41,13 +41,10 @@ export class PostService {
     }
 
     async createPost( dto: createPostDto, image: any, userId: number){
-        const user = await this.userService.getProfile(userId)
-        if(!user){
-            throw new HttpException("Пользователя не существует", HttpStatus.NOT_FOUND)
-        }
         const imageName = await this.fileService.createdFile(image)
         const post = await this.postModel.create({title: dto.title, image: imageName, userId})
-        return post
+        console.log(post)
+        return await this.findPostById(post.id);
     }
 
     async removePost(postId: number, userId: number){
@@ -57,7 +54,7 @@ export class PostService {
         }
         if(post.userId == userId){
             await post.destroy()
-            return {message: "Пост успешно удален"}
+            return {message: "Пост успешно удален", post}
         }
         throw new HttpException("Вы не можете удалить этот пост", HttpStatus.BAD_REQUEST)
     }

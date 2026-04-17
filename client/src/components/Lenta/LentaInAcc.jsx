@@ -3,15 +3,14 @@ import Meme from "../Meme"
 import Create from "./Create"
 
 
-const Lenta = observer(({memes}) => {
+const LentaInAcc = observer(({memes, onLikeSuccess, isMatch}) => {
 
     return(
-        <div className="center-wrap" >
-            <div className="wrap-center-content">
-                <Create/>    
+        <div className="center-wrap" style={{paddingTop: 0}}>
+            <div className="wrap-center-content">  
                 <div className="wrap-memes">
                     {memes.map(meme => (
-                        <Meme key={meme.id} meme={meme} />
+                        <Meme key={meme.id} meme={meme} onLikeSuccess={onLikeSuccess} isMatch={isMatch}/>
                     ))}       
                 </div> 
             </div>
@@ -20,4 +19,4 @@ const Lenta = observer(({memes}) => {
     )
 })
 
-export default Lenta
+export default LentaInAcc

@@ -2,9 +2,11 @@ import { makeAutoObservable, runInAction } from "mobx";
 import $api from "../http/index.ts";
 
 class UserStore {
+    I = {};
     user = {};
     isAuth = false;
     isLoading = false;
+    users = [];
 
     constructor() {
     const token = localStorage.getItem('token');
@@ -33,31 +35,19 @@ class UserStore {
             const { data } = await $api.get(`auth/${id}`);
             
             runInAction(() => {
-                // Создаем Set из ID лайкнутых постов для быстрого поиска
-                const likedIds = new Set(data.likedPosts?.map(p => p.id));
-
-                // Проставляем isLikedByMe для обычных постов
-                if (data.posts) {
-                    data.posts = data.posts.map(post => ({
-                        ...post,
-                        isLikedByMe: likedIds.has(post.id)
-                    }));
-                }
-
-                // Для самих лайкнутых постов это всегда true
-                if (data.likedPosts) {
-                    data.likedPosts = data.likedPosts.map(post => ({
-                        ...post,
-                        isLikedByMe: true
-                    }));
-                }
+                const mapPosts = (posts) => posts?.map(p => ({
+                    ...p,
+                    isLikedByMe: !!(p.likedBy && p.likedBy.length > 0)
+                }));
+                data.posts = mapPosts(data.posts);
+                data.likedPosts = mapPosts(data.likedPosts);
 
                 this.user = data;
                 this.isLoading = false;
             });
         } catch (e) {
             runInAction(() => this.isLoading = false);
-            console.error(e);
+            console.error("Ошибка при получении профиля", e);
         }
     }
 
@@ -82,7 +72,7 @@ class UserStore {
             runInAction(() => {
                 this.user = response.data.user;
                 this.isAuth = true;
-                localStorage.setItem("token", response.data.refreshToken);
+                localStorage.setItem("token", response.data.accessToken);
                 localStorage.setItem("auth", true);
             });
             return response
@@ -115,6 +105,39 @@ class UserStore {
             runInAction(() => {
                 this.isLoading = false;
             });
+        }
+    }
+
+    async getUser(){
+        try{
+            const {data} = await $api.get('/users/one')
+            runInAction(() => {
+                this.I = data
+            })
+        } catch(e){
+            console.error("Ошибка при получение данных")
+        }
+    }
+
+    async getAllUser(){
+        try{
+            const {data} = await $api.get('/users')
+            runInAction(() => {
+                this.users = data
+            })
+        } catch(e){
+            console.error("Ошибка при получение данных")
+        }
+    }
+
+    async updateName(name){
+        try{
+            const {data} = await $api.put('/users/name', { name})
+            runInAction(() => {
+                this.I.name = data.name
+            })
+        }catch(e){
+            console.error("Не удалось обновить имя", e)
         }
     }
 }

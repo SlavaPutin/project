@@ -1,0 +1,39 @@
+@import "C:\Users\slawa\Desktop\project\client\src\style\root.css";
+
+.wrap-delete-modal{
+    display: flex;
+    padding:  30px;
+    flex-direction: column;
+    gap: 7px;
+    background-color: var(--block-bg);
+    border-radius: 36px;
+}
+
+.delete-modal-text{
+    font-size: 14px;
+    color: var(--text-primary);
+}
+
+.wrap-delete-modal-btns{
+    display: flex;
+    justify-content: space-between;
+    align-self: flex-end;
+    gap: 3px;
+}
+
+.no-btn, .yes-btn{
+    height: 20px;
+    padding: 0 20px;
+    font-size: 14px;
+    border-radius: 20px;
+
+}
+
+.no-btn{
+    color: var(--btn-primary-text);
+}
+
+.yes-btn{
+    color: var(--text-primary);
+    background-color: crimson;
+}

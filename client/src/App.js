@@ -5,10 +5,11 @@ import './style/Header.css';
 import './style/Lenta.css';
 import AppRouter from "./Routes/AppRoutes";
 import { AuthContext, loginName } from "./Context/Context";
+import { observer } from "mobx-react-lite";
 
-function App() {
+const App = observer(() => {
   const [isAuth, setIsAuth] = useState(false)
-  const [login, setLogin] =useState('')
+
   useEffect(() => {
     if(localStorage.getItem('token')) {
       setIsAuth(true);
@@ -17,10 +18,6 @@ function App() {
 
 
   return (  
-    <loginName.Provider value={{
-                login,
-                setLogin
-            }}>
     <AuthContext.Provider value={{
       isAuth, 
       setIsAuth
@@ -28,8 +25,8 @@ function App() {
       <BrowserRouter>
         <AppRouter/>
       </BrowserRouter>
-    </AuthContext.Provider></loginName.Provider>
+    </AuthContext.Provider>
   );
-};
+})
 
 export default App;

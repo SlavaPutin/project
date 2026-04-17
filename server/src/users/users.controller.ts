@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Put, Req, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/UserCreate.dto';
 import { addRoleDto } from './dto/addRole.dto';
@@ -9,6 +9,7 @@ import { User } from './user.model';
 import { UserRole } from 'src/role/user-role.model';
 import { banDto } from './dto/ban.dto';
 import { BanGuard } from 'src/auth/Guards/ban.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -29,9 +30,18 @@ export class UsersController {
     @Get()
     @ApiOperation({summary: 'Получение всех пользователей'})
     @ApiResponse({status: 200, type: User})
-    @UseGuards(BanGuard)
+    @UseGuards(AuthGuard("jwt"), BanGuard)
     getAll(){
         return this.usersService.getAllUsers()
+    }
+
+    @Get("/one")
+    @ApiOperation({summary: 'Получение всех пользователей'})
+    @ApiResponse({status: 200, type: User})
+    @UseGuards(AuthGuard("jwt"), BanGuard)
+    getOneUser(@Req() req){
+        const userId = req.user.id
+        return this.usersService.getOneUser(userId)
     }
 
     @Post('/role')
@@ -72,5 +82,15 @@ export class UsersController {
     @ApiResponse({status: 200, type: banDto})
     unbanUser(@Body() dto: banDto){
         return this.usersService.unban(dto)
+    }
+
+    @Put('/name')
+    @UseGuards(AuthGuard('jwt'), BanGuard)
+    updateName(@Body("name") name: string,
+               @Req() req
+){
+        const userId = req.user.id
+        console.log(name)
+        return this.usersService.updateName(name, userId)
     }
 }

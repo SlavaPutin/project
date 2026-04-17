@@ -4,6 +4,7 @@ import $api from "../http/index.ts";
 class PostStore {
     posts = [];
     isLoading = true;
+    post = {};
     
 
     constructor() {
@@ -16,8 +17,9 @@ class PostStore {
             const { data } = await $api.get('/post');
             // В mobx после await изменения стейта должны быть в runInAction
             runInAction(() => {
-                this.posts = data;
+                this.posts = data.sort((a, b) => b.id - a.id);
                 this.isLoading = false;
+
             });
         } catch (e) {
             console.error("Ошибка при загрузке постов", e);
@@ -33,7 +35,6 @@ class PostStore {
     async likePost(postId) {
         try {
             const { data } = await $api.post(`/post/${postId}/like`);
-            console.log(data)
             runInAction(() => {
                 const post = this.posts.find(p => p.id === postId);
                 if (post) {
@@ -56,12 +57,37 @@ class PostStore {
                 headers: {
                     'Content-Type': 'multipart/form-data' // Важно для файлов
                 }
+            
             });
             runInAction(() => {
                 this.addPost(data)
             })
         } catch(e){
             console.error("Не удалось создать пост", e);
+        }
+    }
+
+    async deletePost(id){
+        try{
+            await $api.post(`/post/delete/${id}`)
+            runInAction(() => {
+                this.posts = this.posts.filter(post => post.id !== id);
+            })
+        } catch(e){
+            console.error("Пост не удалось удалить", e)
+        }
+    } 
+
+    async GetOnePost(id){
+        this.isLoading= true
+        try{
+            const {data} = await $api.get(`/post/${id}`)
+            runInAction(() => {
+                this.post = data
+                this.isLoading = false
+            })
+        }catch(e){
+            console.error("Не удалосб загрузить пост", e)
         }
     }
 }

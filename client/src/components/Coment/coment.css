@@ -1,0 +1,80 @@
+@import 'C:\Users\slawa\Desktop\project\client\src\style\root.css';
+
+.wrap-coments{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrap-coments-content{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.wrap-coments2{
+    padding: 12px 24px;
+    border-top: 1px solid var(--border-color);
+}
+
+.wrap-coments3{
+    display: flex;
+    flex-direction: column;
+
+}
+
+.wrap-one-coment{
+    margin-top: 7px;
+    display: flex;
+    position: relative;    
+    border-bottom: 1px solid var(--border-color);
+}
+
+.wrap-onecoment-content{
+    padding-bottom: 16px;
+    flex: 1;
+    min-width: 0;
+}
+
+.wrap-onecoment-content2{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.wrap-name-coment{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.wrap-coment-text{
+    overflow: hidden;
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.delete-coment{
+    transition: background-color .2s ease;
+    border-radius: 50%;
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 100%;
+    font-variant-numeric: tabular-nums;
+    padding: 8px;
+    height: 36px;
+}
+
+.delete-coment:hover{
+    background-color: crimson;
+}

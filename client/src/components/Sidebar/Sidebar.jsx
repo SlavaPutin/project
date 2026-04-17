@@ -7,7 +7,7 @@ import UserStore from "../../store/UserStore";
 const SideBar = observer(() => {
     const navigate = useNavigate()
 
-    const accountPath =`/${UserStore.user.id}`;
+    const accountPath =`/${UserStore.I.id || ''}`;
 
     const logout = async () => {
         await UserStore.logout()

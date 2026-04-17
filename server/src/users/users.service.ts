@@ -39,6 +39,11 @@ export class UsersService {
         }
     }
 
+    async getOneUser(id: number){
+        const user = await this.UserModel.findByPk(id)
+        return user
+    }
+
     async getUserByName(name: string){
         const user = await this.UserModel.findOne({where: {name}, include: [{ all: true}]})
         return user
@@ -46,38 +51,44 @@ export class UsersService {
 
     
 
-    async getProfile(id: number){
+    async getProfile(profileId: number, currentUserId?: number) {
         const user = await this.UserModel.findOne({
-            where: { id },
+            where: { id: profileId },
             attributes: { exclude: ['password', 'refreshToken'] },
             include: [
                 {
                     model: Post,
-                    as: 'likedPosts',
+                    as: 'posts',
                     include: [
+                        { model: User, as: 'author', attributes: ['name'] },
                         { 
                             model: User, 
-                            as: 'author', 
-                            attributes: ['name'] 
+                            as: 'likedBy', 
+                            where: { id: currentUserId }, // Фильтр по тебе
+                            required: false 
                         }
                     ]
                 },
                 {
                     model: Post,
-                    as: 'posts',
+                    as: 'likedPosts',
                     include: [
-                        {
-                            model: User,
-                            as: 'author',
-                            attributes: ['name']
+                        { model: User, as: 'author', attributes: ['name'] },
+                        { 
+                            model: User, 
+                            as: 'likedBy', 
+                            where: { id: currentUserId }, // Фильтр по тебе
+                            required: false 
                         }
                     ]
                 },
-                { all: true } 
+                { all: true }
             ]
         });
-        return user
+        return user;
     }
+
+    
 
     async addRole(dto: addRoleDto){
         const user = await this.UserModel.findOne({where: {name: dto.name}})
@@ -143,4 +154,25 @@ export class UsersService {
                 { where: { id: userId } }
             );
         }
+    
+    async updateName(name: string, userId: number){
+        const candidate = await this.UserModel.findOne({ where: { name } });
+
+        if (candidate && candidate.id !== userId) {
+            throw new HttpException(
+                "Это имя уже занято другим пользователем", 
+                HttpStatus.BAD_REQUEST
+            );
+        }
+        
+        const [count, updatedUsers] = await this.UserModel.update(
+            { name }, 
+            { where: { id: userId }, returning: true }
+        );
+
+        if (count === 0) {
+            throw new HttpException("Пользователь не найден", HttpStatus.NOT_FOUND);
+        }
+        return updatedUsers[0];
+    }
 }

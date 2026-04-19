@@ -6,6 +6,7 @@
     width: 100%;
     will-change: transform;
     border: none;
+    cursor: pointer;
 }
 
 .meme-content{

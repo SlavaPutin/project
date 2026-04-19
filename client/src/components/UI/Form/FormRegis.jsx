@@ -3,13 +3,14 @@ import "./Form.css"
 import { Link, useNavigate } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 import UserStore from "../../../store/UserStore";
+import ErrorAlert from "../../Alerts/ErrorAlert";
 
 
 const FormRegis = observer(() => {
 
-    const[hidden, setHidden] = useState(true)
-    const [login, setLogin] = useState('')
-    const [password, setPassword] = useState('')
+    const[hidden, setHidden] = useState(true);
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
 
     const navigate = useNavigate()
     const submit = async (event) => {
@@ -21,11 +22,10 @@ const FormRegis = observer(() => {
                 if (UserStore.isAuth) {
                     navigate('/');
                 }
-            } catch (error) {
-                alert(error.response?.data?.message || "Произошла ошибка при регистрации");
+            } catch (e) {
             }
         } else {
-            alert("Логин не может быть пустым, а пароль должен быть от 5 символов");
+            UserStore.setError("Логин не может быть пустым, а пароль должен быть от 5 символов");
         }
     };   
     

@@ -69,7 +69,7 @@ export class PostService {
     }
 
     async findPostById(postId: number){
-        const post = await this.postModel.findByPk(postId, {include: {all: true}} )
+        const post = await this.postModel.findByPk(postId, {include: [{all: true}]} )
         if(!post){
             throw new HttpException("Пост не найден", HttpStatus.NOT_FOUND)
         }
@@ -78,7 +78,7 @@ export class PostService {
 
     async toggleLike(postId: number, userId: number) {
         const post = await this.postModel.findByPk(postId);
-        if (!post) throw new HttpException("Пост не найден", HttpStatus.NOT_FOUND);
+        if (!post) throw new HttpException("Мем не найден или удален", HttpStatus.NOT_FOUND);
 
         const existingLike = await this.postLikeModel.findOne({
             where: { postId, userId }

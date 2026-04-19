@@ -6,6 +6,8 @@ import './style/Lenta.css';
 import AppRouter from "./Routes/AppRoutes";
 import { AuthContext, loginName } from "./Context/Context";
 import { observer } from "mobx-react-lite";
+import PostStore from "./store/PostStore";
+import UserStore from "./store/UserStore";
 
 const App = observer(() => {
   const [isAuth, setIsAuth] = useState(false)
@@ -13,7 +15,8 @@ const App = observer(() => {
   useEffect(() => {
     if(localStorage.getItem('token')) {
       setIsAuth(true);
-    }
+    };
+
   }, [])
 
 

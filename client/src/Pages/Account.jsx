@@ -10,13 +10,20 @@ import Loader from "../components/UI/loader/Loader";
 import Lenta from "../components/Lenta/Lenta";
 import LentaInAcc from "../components/Lenta/LentaInAcc";
 import ModalNewName from "../components/Modal/ModalNewName";
+import PostStore from "../store/PostStore";
+import SuccessAlert from "../components/Alerts/SuccessAlert";
+import ErrorAlert from "../components/Alerts/ErrorAlert";
+import Menu from "../components/Menu/Menu";
 
 const Account = observer(() => {
 
-    const isLoading = UserStore.isLoading
-    const [likesPosts, setLikesPosts] = useState("posts")
-    const [modal,setModal] = useState(false)
-    const [newName, setNewName] = useState('')
+    const isLoading = UserStore.isLoading;
+    const [likesPosts, setLikesPosts] = useState("posts");
+    const [modal,setModal] = useState(false);
+    const [newName, setNewName] = useState('');
+    const [width, setWidth] = useState(window.innerWidth);
+    const { successAlert, successMessage } = PostStore;
+    const { errorAlert, errorMessage } = PostStore;
 
 
     const { id } = useParams(); 
@@ -61,11 +68,16 @@ const Account = observer(() => {
 
     useEffect(() => {
         UserStore.getProfile(id)
-    }, [id])
+    }, [id, PostStore.posts])
     
     useEffect(() => {
         UserStore.getUser();
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, [])
+
+    const isMobile = width <= 1172;
 
     const switchLikeToPosts = () => {
         setLikesPosts('posts')
@@ -81,7 +93,9 @@ const Account = observer(() => {
     
     return(
         <div className="bodys">
-            <SideBar/>
+            {isMobile ? <Menu/> :<SideBar/>}
+            {successAlert && <SuccessAlert>{successMessage}</SuccessAlert>}
+            {errorAlert && <ErrorAlert>{errorMessage}</ErrorAlert>}
             <div className="wrap-main">
                 <div className="center-wrap">
                    <div className="wrap-center-content">
@@ -120,7 +134,7 @@ const Account = observer(() => {
                                         <button className="posts-btn" onClick={switchLikeToPosts}>Посты</button>
                                         <button className="likes-btn" onClick={switchPostsToLike}>Лайки</button>
                                     </div>
-                                    {matchId && <Create/>}
+                                    {(matchId && !isMobile) && <Create/>}
                                     {currentMemes.length > 0 
                                         ? <LentaInAcc memes={currentMemes} onLikeSuccess={handleUpdateLike} isMatch={matchId}/>
                                         : <div className="wrap-error"><span>Тут пока пусто</span></div>}

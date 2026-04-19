@@ -22,10 +22,9 @@ const FormLogin = observer(() => {
                     navigate('/');
                 }
             } catch (error) {
-                alert(error.response?.data?.message || "Произошла ошибка при регистрации");
             }
         } else {
-            alert("Логин не может быть пустым, а пароль должен быть от 5 символов");
+            UserStore.setError("Логин не может быть пустым, а пароль должен быть от 5 символов");
         }
     };
 

@@ -1,0 +1,21 @@
+@import 'C:\Users\slawa\Desktop\project\client\src\style\root.css';
+
+.wrap-error-alert, .wrap-success-alert{
+    position: fixed;
+    display: flex;
+    color: var(--text-primary);
+    justify-content: center;
+    padding: 10px 20px;
+    right: 40px;
+    bottom: 20px;
+    min-width: 150px;
+    min-height: 15px;
+}
+
+.wrap-success-alert{
+    background-color: rgb(91, 164, 18);
+}
+
+.wrap-error-alert{
+    background-color: rgb(221, 6, 6);
+}

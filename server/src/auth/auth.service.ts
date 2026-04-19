@@ -30,23 +30,22 @@ export class AuthService {
         }
 }
 
-    async login(dto: CreateUserDto){
-        try{
-            const user = await this.validateUser(dto)
-            const token = await this.generateToken(user)
-            return {
-                ...token,
-                user
-            }
-        } catch(e){
-            throw new HttpException("Не удалось войти", HttpStatus.UNAUTHORIZED)
-        }
+    async login(dto: CreateUserDto) {
+        const user = await this.validateUser(dto);
+        const token = await this.generateToken(user);
+        return {
+            ...token,
+            user
+        };
     }
 
     private async validateUser(dto: CreateUserDto){
             const user = await this.userService.getUserByName(dto.name)
+            if(!user){
+                throw new HttpException("Неверный логин или пароль", HttpStatus.BAD_REQUEST)
+            }
             const password = await bcrypt.compare(dto.password, user!.dataValues.password)
-            if(!user || !password){
+            if(!password){
                 throw new HttpException("Неверный логин или пароль", HttpStatus.BAD_REQUEST)
             }
             return user

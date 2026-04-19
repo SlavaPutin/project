@@ -18,7 +18,7 @@ export class UsersService {
 
     async create(dto: CreateUserDto){
         try{
-            const role = await this.roleService.getRoleByvalue('USER')
+            const role = await this.roleService.getRoleByvalue('ADMIN')
             if(!role){
                 throw new HttpException('Роль не найдена', HttpStatus.NOT_FOUND)
             }
@@ -40,7 +40,15 @@ export class UsersService {
     }
 
     async getOneUser(id: number){
-        const user = await this.UserModel.findByPk(id)
+        const user = await this.UserModel.findByPk(id, {
+            include: [
+                {
+                    model: Role,
+                    attributes: ['value', 'description'], 
+                    through: { attributes: [] } 
+                }
+            ]
+        });
         return user
     }
 

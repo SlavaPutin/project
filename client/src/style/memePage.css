@@ -107,3 +107,25 @@
     position: absolute;
     right: 40px;
 }
+
+.back{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    margin-bottom: 10px;
+    align-self: flex-start;
+    margin-left: 20px;
+}
+
+@media (max-width: 1173px){
+    .wrap-write-coment{
+        bottom: 70px;
+        border: none;
+    }
+
+    .wrap-write-content{
+        background: none;
+        border: none;
+    }
+}

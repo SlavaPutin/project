@@ -16,4 +16,5 @@
     --tab-active-bg: rgba(255, 255, 255, .08);
     --padding: 4px;
     --glass-bg: rgba(47, 47, 47, .5);
+    --shadow-elevated: 0 4px 16px rgb(0 0 0 / 20%);
 }

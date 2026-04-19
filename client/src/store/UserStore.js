@@ -7,6 +7,8 @@ class UserStore {
     isAuth = false;
     isLoading = false;
     users = [];
+    errorAlert = false;
+    errorMessage = '';
 
     constructor() {
     const token = localStorage.getItem('token');
@@ -27,6 +29,16 @@ class UserStore {
 
     setLoading(bool) {
         this.isLoading = bool;
+    }
+
+    setError(message) {
+        runInAction(() => {
+            this.errorAlert = true;
+            this.errorMessage = message;
+        });
+        setTimeout(() => {
+            runInAction(() => { this.errorAlert = false; });
+        }, 5000);
     }
 
     async getProfile(id) {
@@ -77,7 +89,14 @@ class UserStore {
             });
             return response
         } catch (error) {
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка регистрации";
+            });
             console.error("Ошибка регистрации:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
             throw error;
         } finally {
             runInAction(() => {
@@ -99,7 +118,14 @@ class UserStore {
             
             return response
         } catch (error) {
-            console.error("Ошибка регистрации:", error.response?.data?.message || error.message);
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка входа";
+            });
+            console.error("Ошибка входа:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
             throw error;
         } finally {
             runInAction(() => {
@@ -139,6 +165,10 @@ class UserStore {
         }catch(e){
             console.error("Не удалось обновить имя", e)
         }
+    }
+
+    get isAdmin() {
+        return this.I?.role?.some(role => role.value === 'ADMIN') || false;
     }
 }
 

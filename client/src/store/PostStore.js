@@ -5,6 +5,10 @@ class PostStore {
     posts = [];
     isLoading = true;
     post = {};
+    errorAlert = false;
+    errorMessage = '';
+    successAlert = false;
+    successMessage = '';
     
 
     constructor() {
@@ -43,8 +47,16 @@ class PostStore {
                 }
             });
             return data
-        } catch (e) {
-            console.error("Не удалось поставить лайк");
+        } catch (error) {
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка при постановке лайка";
+            });
+            console.error("Не удалось поставить лайк:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
+            throw error;
         }
     }
 
@@ -60,7 +72,12 @@ class PostStore {
             
             });
             runInAction(() => {
-                this.addPost(data)
+                this.fetchPosts()
+                this.successAlert = true
+                this.successMessage = "Мем создан"
+                setTimeout(() => {
+                    this.successAlert = false;
+                }, 5000);
             })
         } catch(e){
             console.error("Не удалось создать пост", e);
@@ -69,25 +86,68 @@ class PostStore {
 
     async deletePost(id){
         try{
-            await $api.post(`/post/delete/${id}`)
+            const {data} = await $api.post(`/post/delete/${id}`)
             runInAction(() => {
                 this.posts = this.posts.filter(post => post.id !== id);
+                this.successAlert = true
+                this.successMessage = "Мем удален"
+                setTimeout(() => {
+                    this.successAlert = false;
+                }, 5000);
             })
-        } catch(e){
-            console.error("Пост не удалось удалить", e)
+        } catch(error){
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка при удалении мема";
+            });
+            console.error("Мем не удалось удалить:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
+            throw error;
         }
-    } 
+    }
+    
+    async deletePostAdmin(id){
+        try{
+            const {data} = await $api.post(`/post/admin/delete/${id}`)
+            runInAction(() => {
+                this.posts = this.posts.filter(post => post.id !== id);
+                this.successAlert = true
+                this.successMessage = "Мем удален"
+                setTimeout(() => {
+                    this.successAlert = false;
+                }, 5000);
+            })
+        } catch(error){
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка при удалении мема";
+            });
+            console.error("Мем не удалось удалить:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
+            throw error;
+        }
+    }
 
     async GetOnePost(id){
         this.isLoading= true
         try{
             const {data} = await $api.get(`/post/${id}`)
             runInAction(() => {
+                const postInLenta = this.posts.find(p => p.id === Number(id));
+                if (postInLenta) {
+                    data.isLikedByMe = postInLenta.isLikedByMe;
+                } else {
+                    data.isLikedByMe = false; 
+                }
                 this.post = data
                 this.isLoading = false
             })
         }catch(e){
-            console.error("Не удалосб загрузить пост", e)
+            console.error("Не удалосб загрузить мем", e)
         }
     }
 }

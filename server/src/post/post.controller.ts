@@ -8,12 +8,15 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RoleGuard } from 'src/auth/Guards/roles.guard';
 import { PostLike } from './like.model';
+import { InjectModel } from '@nestjs/sequelize';
 
 @UseGuards(AuthGuard('jwt'), BanGuard)
 @Controller('post')
 export class PostController {
 
-    constructor(private postService: PostService){}
+    constructor(private postService: PostService,
+        @InjectModel(PostLike) private postLikeModel: typeof PostLike
+    ){}
 
     @Post()
     @UsePipes(new ValidationPipe())
@@ -51,8 +54,24 @@ export class PostController {
     @Get('/:id')
     @ApiOperation({summary: 'Получение поста'})
     @ApiResponse({status: 200, type: Post})
-    getPost(@Param('id') postId: number){
-        return this.postService.findPostById(postId)
+    async getPost(@Param('id') postId: number,
+            @Req() req
+){
+        const post = await this.postService.findPostById(postId)
+        const postJson = post.get({ plain: true }) as any;
+        const userId = req.user?.id; 
+
+        if (userId) {
+            const isLiked = await this.postLikeModel.findOne({ 
+                where: { postId, userId } 
+            });
+            if(isLiked)
+                postJson.isLikedByMe = true;
+        } else {
+            postJson.isLikedByMe = false;
+        }
+
+        return postJson;
     }
 
     @Get('')

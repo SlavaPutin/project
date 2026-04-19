@@ -54,3 +54,14 @@ a {
     justify-content: center;
     align-items: center;
 }
+
+
+@media (max-width: 1173px) {
+    .wrap-main{
+        max-width: 100%;
+    }
+
+    body{
+        padding: 0px 12px;
+    }
+}

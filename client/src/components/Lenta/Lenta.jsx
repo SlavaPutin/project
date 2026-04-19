@@ -3,12 +3,12 @@ import Meme from "../Meme"
 import Create from "./Create"
 
 
-const Lenta = observer(({memes}) => {
+const Lenta = observer(({memes, isMobile}) => {
 
     return(
         <div className="center-wrap" >
             <div className="wrap-center-content">
-                <Create/>    
+                {!isMobile && <Create/>}    
                 <div className="wrap-memes">
                     {memes.map(meme => (
                         <Meme key={meme.id} meme={meme} />

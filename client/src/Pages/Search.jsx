@@ -5,21 +5,28 @@ import SearchNames from "../components/SearchNames/SearchNames";
 import UserStore from "../store/UserStore";
 import { observer } from "mobx-react-lite";
 import { useSearch } from "../hooks/UseSort";
+import Menu from "../components/Menu/Menu";
 
 const SearchPage = observer(() => {
     const [value, setValue] = useState('')
-    
+    const [width, setWidth] = useState(window.innerWidth);
+
+
     useEffect(() => {
-        UserStore.getAllUser()
+        UserStore.getAllUser()  
+        const handleResize = () => setWidth(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, [])
 
     const users = useSearch(value, UserStore.users)
 
+    const isMobile = width <= 1172;
 
 
     return(
         <div className="bodys">
-            <SideBar/>
+            {isMobile ? <Menu/> :<SideBar/>}
             <div className="wrap-main">
                 <div className="center-wrap">
                     <div className="wrap-center-content">

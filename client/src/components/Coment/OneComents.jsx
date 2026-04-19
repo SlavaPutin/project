@@ -71,7 +71,7 @@ const OneComent = observer(({coment}) => {
                                                         <path d="M13.9999 17.9994C14.2651 17.9994 14.5195 17.894 14.707 17.7065C14.8945 17.5189 14.9999 17.2646 14.9999 16.9994V10.9994C14.9999 10.7342 14.8945 10.4798 14.707 10.2923C14.5195 10.1047 14.2651 9.99939 13.9999 9.99939C13.7347 9.99939 13.4803 10.1047 13.2928 10.2923C13.1052 10.4798 12.9999 10.7342 12.9999 10.9994V16.9994C12.9999 17.2646 13.1052 17.5189 13.2928 17.7065C13.4803 17.894 13.7347 17.9994 13.9999 17.9994Z" fill="rgba(255, 255, 255, .5)"/>
                                                         </svg>
                                                     </button>
-                                                    <DeleteModal style={{display: modal ? 'flex' : "none"}} setVisible={setModal} Deletefun={DeleteFun} id={coment.id} visible={modal} text={'коментарий'}/></>
+                                                    <DeleteModal style={{display: modal ? 'flex' : "none"}} setVisible={setModal} Deletefun={DeleteFun} id={coment.id} visible={modal}>коментарий</DeleteModal></>
                                     }
             </div>
         </div>

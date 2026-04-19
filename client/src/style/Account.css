@@ -85,7 +85,7 @@
 }
 
 .focusonbtn{
-    width: 321px;
+    width: 50%;
     position: absolute;
     top: var(--padding);
     bottom: var(--padding);

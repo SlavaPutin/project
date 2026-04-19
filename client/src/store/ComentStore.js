@@ -3,6 +3,10 @@ import $api from "../http/index.ts";
 
 class ComentStore {
     coments = [];
+    errorAlert = false;
+    errorMessage = '';
+    successAlert = false;
+    successMessage = '';
     
 
     constructor() {
@@ -17,8 +21,8 @@ class ComentStore {
             runInAction(() => {
                 this.coments = data.sort((a, b) => b.id - a.id)
             })
-        } catch(e){
-            console.error("Не удалось получить посты", e)
+        } catch(error){
+            throw error;
         }
     }
 
@@ -26,6 +30,13 @@ class ComentStore {
         try{
             await $api.post( `/coment/${postId}`, {content: text});
             await this.fetchComents(postId);
+            runInAction(() => {
+                this.successAlert = true
+                this.successMessage = "Коментарий оставлен"
+                setTimeout(() => {
+                    this.successAlert = false;
+                }, 5000);
+            })
         } catch(e){
             console.error("Не удалось оставить комментарий", e)
         }
@@ -53,8 +64,16 @@ class ComentStore {
             runInAction(() => {
                 this.coments = this.coments.filter(coment => coment.id !== comentId);
             })
-        } catch(e){
-            console.error("Коментарий не удалось удалить", e)
+        } catch(error){
+            runInAction(() => {
+                this.errorAlert = true;
+                this.errorMessage = error.response?.data?.message || "Ошибка при удалении коментария";
+            });
+            console.error("Коментарий не удалось удалить:", error.response?.data?.message || error.message);
+            setTimeout(() => {
+                this.errorAlert = false;
+            }, 5000);
+            throw error;
         }
     }
 }

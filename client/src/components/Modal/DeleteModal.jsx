@@ -2,7 +2,7 @@ import React, { Children, useEffect } from "react";
 import './deleteModal.css'
 import "./modalNewName.css"
 
-const DeleteModal = ({visible, setVisible, style, Deletefun, id, text}) => {
+const DeleteModal = ({visible, setVisible, style, Deletefun, id, children}) => {
 
     return (
          <div className="wrap-modal-center" style={style} onClick={() => setVisible(false)}>
@@ -20,7 +20,7 @@ const DeleteModal = ({visible, setVisible, style, Deletefun, id, text}) => {
                     </svg>
                 </button>
                 <div className="wrap-delete-modal">
-                    <span className="delete-modal-text">Вы дейтвительно хотите удалить {text}?</span>
+                    <span className="delete-modal-text">Вы дейтвительно хотите удалить {children}?</span>
                     <div className="wrap-delete-modal-btns">
                         <button className="no-btn" onClick={() => setVisible(false)}>Омена</button>
                         <button className="yes-btn" onClick={() => Deletefun(id)}>Удалить</button>

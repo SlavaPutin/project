@@ -9,7 +9,7 @@ const Create = observer(() => {
     const [image, setImage] = useState(null)
     const fileInputRef = useRef(null);
 
-    const uslovia = title.length > 0 
+    const uslovia = title.length > 0 && image
 
     const handleFileChange = (e) => {
         if (e.target.files && e.target.files[0]) {

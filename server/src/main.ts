@@ -19,6 +19,6 @@ async function start() {
     credentials: true, // разрешаем куки
     origin: process.env.FRONT_URL // адрес фронта
   });
-  await app.listen(PORT, () => {console.log(`Сервер запущен на ${PORT}`)});
+  await app.listen(PORT, '0.0.0.0', () => { console.log(`Сервер запущен на ${PORT}`) });
 }
 start();

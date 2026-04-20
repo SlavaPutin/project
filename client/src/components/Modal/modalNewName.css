@@ -1,5 +1,4 @@
-@import "C:\Users\slawa\Desktop\project\client\src\style\root.css";
-
+@import '../../style/root.css';
 .wrap-modal-center{
     position: fixed;
     inset: 0;

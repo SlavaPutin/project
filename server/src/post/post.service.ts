@@ -7,6 +7,8 @@ import { FileService } from 'src/file/file.service';
 import { PostLike } from './like.model';
 import { User } from 'src/users/user.model';
 import { Coment } from 'src/coment/coment.model';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class PostService {
@@ -47,16 +49,22 @@ export class PostService {
         return await this.findPostById(post.id);
     }
 
-    async removePost(postId: number, userId: number){
-        const post = await this.findPostById(postId)
-        if(!post){
-            throw new HttpException("Этот пост уже был удален", HttpStatus.NOT_FOUND)
+    async removePost(postId: number, userId: number) {
+        const post = await this.findPostById(postId);
+        if (!post) {
+            throw new HttpException("Этот пост уже был удален", HttpStatus.NOT_FOUND);
         }
-        if(post.userId == userId){
-            await post.destroy()
-            return {message: "Пост успешно удален", post}
+
+        if (post.userId !== userId) {
+            throw new HttpException("Вы не можете удалить этот пост", HttpStatus.BAD_REQUEST);
         }
-        throw new HttpException("Вы не можете удалить этот пост", HttpStatus.BAD_REQUEST)
+
+        const filePath = path.resolve(__dirname, '..', '..', 'static', post.image); 
+        await fs.unlink(filePath).catch(err => {
+            console.error('Ошибка при удалении файла:', err);
+        });
+        await post.destroy();
+        return { message: "Пост успешно удален", post };
     }
 
     async removePostAdmin(postId: number){
@@ -64,6 +72,10 @@ export class PostService {
         if(!post){
             throw new HttpException("Этот пост уже был удален", HttpStatus.NOT_FOUND)
         }
+        const filePath = path.resolve(__dirname, '..', '..', 'static', post.image); 
+        await fs.unlink(filePath).catch(err => {
+            console.error('Ошибка при удалении файла:', err);
+        });
         await post.destroy()
         return {message: "Пост успешно удален"}
     }

@@ -1,6 +1,4 @@
 import React, {useContext, useState} from "react";
-import MyButton from "../components/UI/Button/MyButton";
-import MyInput from "../components/UI/MyInput/MyInput";
 import { AuthContext, loginName } from "../Context/Context";
 import '../style/Login-Registration.css'
 import { Link, useNavigate } from "react-router-dom";

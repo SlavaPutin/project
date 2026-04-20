@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import '../style/App.css'
 import '../style/Header.css'
 import '../style/Lenta.css'
-import "../svg/profile-svgrepo-com.svg"
 import "../style/sidebar.css"
 import Lenta from '../components/Lenta/Lenta';
 import { useSort } from '../hooks/UseSort';

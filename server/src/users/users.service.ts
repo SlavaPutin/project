@@ -16,9 +16,58 @@ export class UsersService {
                 private roleService: RoleService                
 ){}
 
+
+    async onModuleInit() {
+        try {
+            console.log('=== [DB INIT] Начинаю инициализацию данных ===');
+            let adminRole;
+            try {
+                adminRole = await this.roleService.getRoleByvalue('ADMIN');
+                console.log('— Роль ADMIN уже существует');
+            } catch (e) {
+                adminRole = await this.roleService.create({
+                    value: 'ADMIN',
+                    description: 'Администратор с полными правами'
+                });
+                console.log('— Создана роль: ADMIN');
+            }
+
+            try {
+                await this.roleService.getRoleByvalue('USER');
+                console.log('— Роль USER уже существует');
+            } catch (e) {
+                await this.roleService.create({
+                    value: 'USER',
+                    description: 'Обычный пользователь'
+                });
+                console.log('— Создана роль: USER');
+            }
+            const adminName = 'admin';
+            const existingAdmin = await this.getUserByName(adminName);
+
+            if (!existingAdmin) {
+                const hashedPassword = await bcrypt.hash('admin123', 5);
+                const admin = await this.UserModel.create({
+                    name: adminName,
+                    password: hashedPassword
+                });
+                await admin.$set('role', [adminRole.id]);
+                
+                console.log(`— [SUCCESS] Администратор создан: ${adminName} / пароль: admin123`);
+            } else {
+                console.log('— Администратор уже существует');
+            }
+
+            console.log('=== [DB INIT] Инициализация завершена успешно ===');
+        } catch (error) {
+            console.error('!!! [DB INIT ERROR] Ошибка при инициализации:', error);
+        }
+    }
+
+
     async create(dto: CreateUserDto){
         try{
-            const role = await this.roleService.getRoleByvalue('ADMIN')
+            const role = await this.roleService.getRoleByvalue('USER')
             if(!role){
                 throw new HttpException('Роль не найдена', HttpStatus.NOT_FOUND)
             }

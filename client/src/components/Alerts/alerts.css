@@ -1,4 +1,4 @@
-@import 'C:\Users\slawa\Desktop\project\client\src\style\root.css';
+@import '../../style/root.css';
 
 .wrap-error-alert, .wrap-success-alert{
     position: fixed;

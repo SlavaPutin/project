@@ -25,7 +25,6 @@ const Account = observer(() => {
     const { successAlert, successMessage } = PostStore;
     const { errorAlert, errorMessage } = PostStore;
 
-
     const { id } = useParams(); 
     const memes = UserStore.user.posts || []
     const likedMemes = UserStore.user.likedPosts || []    
@@ -67,6 +66,7 @@ const Account = observer(() => {
     };
 
     useEffect(() => {
+        if(id !='login')
         UserStore.getProfile(id)
     }, [id, PostStore.posts])
     

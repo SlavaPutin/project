@@ -15,7 +15,7 @@ const FormLogin = observer(() => {
 
     const submit = async (event) => {
         event.preventDefault();
-        if (login !== '' && password.length >= 5) {
+        if (login !== '' && password.length >= 5 && login.length <=16) {
             try {
                 await UserStore.login(login, password);
                 if (UserStore.isAuth) {
@@ -24,7 +24,7 @@ const FormLogin = observer(() => {
             } catch (error) {
             }
         } else {
-            UserStore.setError("Логин не может быть пустым, а пароль должен быть от 5 символов");
+            UserStore.setError("Логин не может быть пустым и меньше 16 символов, а пароль должен быть от 5 символов");
         }
     };
 

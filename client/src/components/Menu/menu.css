@@ -53,3 +53,17 @@
     background-color: var(--block-bg);
     color: var(--text-primary);
 }
+
+.plus{
+   background-color: var(--block-bg);
+   width: 40px;
+   height: 40px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   align-self: flex-end; 
+   border-radius: 50%;
+   padding: 10px;
+   cursor: pointer;
+   pointer-events: auto;
+}

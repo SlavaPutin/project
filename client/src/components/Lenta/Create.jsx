@@ -3,7 +3,7 @@ import "./create.css"
 import { observer } from "mobx-react-lite";
 import PostStore from "../../store/PostStore";
 
-const Create = observer(() => {
+const Create = observer(({setVisible}) => {
 
     const [title, setTitle] = useState('')
     const [image, setImage] = useState(null)
@@ -25,6 +25,7 @@ const Create = observer(() => {
         PostStore.createPost(title, image)
         setTitle('')
         setImage(null)
+        if (setVisible) setVisible(false);
     }
 
 
